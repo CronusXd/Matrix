@@ -1,0 +1,251 @@
+{
+  "pipeline": "Matrix 4-Phase Pipeline",
+  "version": "1.0",
+  "phases": {
+    "init": {
+      "description": "Inicialização do pipeline",
+      "items": [
+        {
+          "id": "init_04",
+          "check": "🔬 State machine validada automaticamente (validate-pipeline passou)?",
+          "expected": "validate-pipeline.js retornou 8/8 PASS, exit code 0"
+        },
+        {
+          "id": "init_01",
+          "check": "🤖 Orchestrator se identificou como @AgentsOrchestrator?",
+          "expected": "## 🤖 @AgentsOrchestrator iniciando: [descrição da demanda]"
+        },
+        {
+          "id": "init_02",
+          "check": "📋 Todowrite de obrigações foi criada com todos os 10 itens?",
+          "expected": "todowrite criado com 10 itens como pending"
+        },
+        {
+          "id": "init_03",
+          "check": "✅ Todos os 10 itens de obrigação foram marcados como completed?",
+          "expected": "100% dos itens completed"
+        }
+      ]
+    },
+    "fase_1": {
+      "description": "Análise — Fable Method Steps 0-3",
+      "items": [
+        {
+          "id": "f1_01",
+          "check": "🧠 @fable-method-agent foi delegado via task?",
+          "expected": "task delegada para fable-method-agent"
+        },
+        {
+          "id": "f1_02",
+          "check": "Step 0 — Classificação foi feita (Question/Task/Plan-first)?",
+          "expected": "classificação explícita da demanda"
+        },
+        {
+          "id": "f1_03",
+          "check": "Step 1 — Done foi definido com critérios de verificação?",
+          "expected": "critérios de aceitação + verificação definidos"
+        },
+        {
+          "id": "f1_04",
+          "check": "Step 2 — Evidências foram reunidas (pesquisa, leitura, testes)?",
+          "expected": "arquivos lidos, código pesquisado, evidências coletadas"
+        },
+        {
+          "id": "f1_05",
+          "check": "Step 3 — Decisão tomada com recomendação e plano de ação?",
+          "expected": "recomendação + plano de ação definidos"
+        },
+        {
+          "id": "f1_06",
+          "check": "📋 Todolist foi criada como plano de implementação com fases nomeadas?",
+          "expected": "todowrite com fases A/B/C, especialistas, tasks, verificação"
+        }
+      ]
+    },
+    "fase_2": {
+      "description": "Execução — Fable Method Steps 4-6 com Context Builder",
+      "items": [
+        {
+          "id": "f2_00",
+          "check": "📦 Context Builder foi executado (CB.1 a CB.6) antes de delegar?",
+          "expected": "arquivos descobertos, pontuados, eliminados, ordenados, contexto montado e entregue"
+        },
+        {
+          "id": "f2_00_pd",
+          "check": "📬 Parallel Dispatch: tasks foram decompostas, roteadas e contextos individuais preparados?",
+          "expected": "dispatch concluido com tasks {agent, context, dependsOn}"
+        },
+        {
+          "id": "f2_00_pe",
+          "check": "⚡ Parallel Execution: pool maxWorkers=6 executou agentes simultaneamente?",
+          "expected": "pool executou com NON-BLOCKING; maxWorkers respeitado"
+        },
+        {
+          "id": "f2_00_pm",
+          "check": "🔗 Parallel Merge: resultados foram consolidados e conflitos detectados?",
+          "expected": "merge gerou relatorio com summary; conflitos registrados se houver"
+        },
+        {
+          "id": "f2_01",
+          "check": "🔧 Especialista correto foi delegado via task (nunca @general)?",
+          "expected": "especialista da tabela de roteamento ou @senior-developer"
+        },
+        {
+          "id": "f2_02",
+          "check": "🤖 Especialista se identificou no início?",
+          "expected": "## 🤖 @[Nome] iniciando tarefa: [descrição]"
+        },
+        {
+          "id": "f2_03",
+          "check": "Step 4 — Agiu cirurgicamente (só o necessário)?",
+          "expected": "mudança mínima, sem scope creep"
+        },
+        {
+          "id": "f2_04",
+          "check": "Step 5 — Verificou (tests, build, runtime check)?",
+          "expected": "testes executados e passando"
+        },
+        {
+          "id": "f2_05",
+          "check": "Step 6 — Reportou outcome-first + caveats?",
+          "expected": "relatório com resultado, caveats e limitações"
+        },
+        {
+          "id": "f2_06",
+          "check": "✅ Tasks foram marcadas como completed na todolist?",
+          "expected": "todas as tasks da fase marcadas completed"
+        },
+        {
+          "id": "f2_07",
+          "check": "✅ Especialista se identificou no fim?",
+          "expected": "## ✅ @[Nome] concluiu: [resumo]"
+        }
+      ]
+    },
+    "fase_3": {
+      "description": "Validação — Fable Judge",
+      "items": [
+        {
+          "id": "f3_01",
+          "check": "🧪 @fable-judge foi delegado via task?",
+          "expected": "task delegada para fable-judge"
+        },
+        {
+          "id": "f3_02",
+          "check": "Judge re-executou as verificações alegadas pelo especialista?",
+          "expected": "verificações re-executadas e outputs capturados"
+        },
+        {
+          "id": "f3_03",
+          "check": "Judge detectou fraudes? (testes enfraquecidos, scope creep, claims falsas)",
+          "expected": "análise adversarial completa"
+        },
+        {
+          "id": "f3_04",
+          "check": "Veredito: VERIFIED / CAVEATS / REFUTED / VIOLATION?",
+          "expected": "veredito claro com evidências"
+        }
+      ]
+    },
+    "fase_4": {
+      "description": "Revisão — Code Review",
+      "items": [
+        {
+          "id": "f4_01",
+          "check": "👁️ @code-reviewer foi delegado via task?",
+          "expected": "task delegada para code-reviewer"
+        },
+        {
+          "id": "f4_02",
+          "check": "Corretude técnica foi avaliada?",
+          "expected": "código faz o que deveria"
+        },
+        {
+          "id": "f4_03",
+          "check": "Segurança foi avaliada? (UB, buffer overflow, deadlock)",
+          "expected": "análise de segurança realizada"
+        },
+        {
+          "id": "f4_04",
+          "check": "Estilo consistente com o projeto?",
+          "expected": "código segue padrões do projeto"
+        },
+        {
+          "id": "f4_05",
+          "check": "Testes adequados?",
+          "expected": "testes existem e cobrem os caminhos importantes"
+        },
+        {
+          "id": "f4_06",
+          "check": "Resultado: APPROVED ou CHANGES_NEEDED?",
+          "expected": "decisão clara do revisor"
+        }
+      ]
+    },
+    "entrega": {
+      "description": "Delivery e Relatório",
+      "items": [
+        {
+          "id": "del_01",
+          "check": "📤 git add + git commit + git push foram executados?",
+          "expected": "comando git executado com sucesso"
+        },
+        {
+          "id": "del_02",
+          "check": "📢 Report: 'Especialista designado: @[nome]' foi entregue?",
+          "expected": "seção 'Agentes e Skills Utilizados' incluída"
+        }
+      ]
+    },
+    "release_init": {
+      "description": "Inicialização do release",
+      "items": [
+        {
+          "id": "rinit_01",
+          "check": "release-config.yaml existe e é parseável?",
+          "expected": "Arquivo presente com YAML válido"
+        },
+        {
+          "id": "rinit_02",
+          "check": "version_file existe?",
+          "expected": "Arquivo de versão legível"
+        },
+        {
+          "id": "rinit_03",
+          "check": "auto_increment é válido?",
+          "expected": "major/minor/patch"
+        }
+      ]
+    },
+    "release_prep": {
+      "description": "Preparação da release",
+      "items": [
+        {
+          "id": "rprep_01",
+          "check": "Tag git criada?",
+          "expected": "Tag vX.Y.Z existe"
+        },
+        {
+          "id": "rprep_02",
+          "check": "Build executado?",
+          "expected": "Build OK"
+        }
+      ]
+    },
+    "release_build": {
+      "description": "Build e deploy",
+      "items": [
+        {
+          "id": "rbuild_01",
+          "check": "GitHub Release publicado?",
+          "expected": "Release visível"
+        },
+        {
+          "id": "rbuild_02",
+          "check": "Hooks pós-deploy executados?",
+          "expected": "Notificações enviadas"
+        }
+      ]
+    }
+  }
+}

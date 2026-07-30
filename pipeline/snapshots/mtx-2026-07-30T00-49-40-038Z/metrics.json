@@ -1,0 +1,40 @@
+{
+  "pipeline_version": "1.0",
+  "observability_version": "1.0",
+  "total_demandas": 1,
+  "states_completed": 4,
+  "states_failed": 0,
+  "escalations": 0,
+  "total_duration_ms": 1239,
+  "agents_by_type": {
+    "integration-test": 12
+  },
+  "tools_by_type": {
+    "test": 12
+  },
+  "retries": {
+    "fase3_validation": 0,
+    "fase4_review": 0
+  },
+  "failures_by_phase": {},
+  "events_count": 12,
+  "last_reset": null,
+  "token_usage_real": {
+    "gpt-4o": {
+      "input_tokens": 1302,
+      "output_tokens": 631,
+      "total_tokens": 1933,
+      "input_cost": 0.00651,
+      "output_cost": 0.009465,
+      "total_cost": 0.015975,
+      "calls": 12
+    }
+  },
+  "token_usage": {
+    "gpt-4o": {
+      "tokens": 1933,
+      "cost": 0.015975,
+      "calls": 12
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "matrix-pipeline",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Matrix - Autonomous Agent Orchestration Pipeline",
+  "scripts": {
+    "start": "node pipeline/scripts/pipeline-start.js",
+    "start:auto": "node pipeline/scripts/pipeline-start.js --auto",
+    "validate": "node pipeline/scripts/validate-pipeline.js",
+    "test": "node pipeline/tests/run-all.js",
+    "test:flow": "node pipeline/tests/test-flow-completo.js",
+    "test:mem": "node pipeline/tests/test-memory-adapter.js",
+    "coverage": "npx nyc node pipeline/tests/run-coverage.js"
+  },
+  "devDependencies": {
+    "nyc": "^18.0.0"
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "benchmark_version": "1.0",
+  "model": "oc/deepseek-v4-flash-free",
+  "tasks": [
+    {
+      "id": "SIMPLE-001",
+      "description": "Corrigir typo no README: 'referrence' → 'reference'",
+      "classification": "simple",
+      "expected_difficulty": 1,
+      "ground_truth": {
+        "files_changed": ["README.md"],
+        "max_lines_changed": 1,
+        "tests_should_pass": true,
+        "no_scope_creep": true,
+        "min_quality_score": 8
+      }
+    },
+    {
+      "id": "SIMPLE-002",
+      "description": "Renomear funcao 'calcTotal' para 'calculateTotal' em src/utils/math.ts",
+      "classification": "simple",
+      "expected_difficulty": 1,
+      "ground_truth": {
+        "files_changed": ["src/utils/math.ts"],
+        "max_lines_changed": 3,
+        "tests_should_pass": true,
+        "no_scope_creep": true,
+        "min_quality_score": 8
+      }
+    },
+    {
+      "id": "SIMPLE-003",
+      "description": "Adicionar validacao de campo obrigatorio 'nome' no formulario de cadastro",
+      "classification": "simple",
+      "expected_difficulty": 2,
+      "ground_truth": {
+        "files_changed": ["src/forms/register.tsx"],
+        "max_lines_changed": 10,
+        "tests_should_pass": true,
+        "no_scope_creep": true,
+        "min_quality_score": 7
+      }
+    },
+    {
+      "id": "MEDIUM-001",
+      "description": "Corrigir bug no calculo de frete: quando CEP e de regiao remota, frete deve ser gratis para compras acima de R$ 200",
+      "classification": "medium",
+      "expected_difficulty": 3,
+      "ground_truth": {
+        "files_changed": ["src/services/shipping.ts"],
+        "max_lines_changed": 15,
+        "tests_should_pass": true,
+        "no_scope_creep": true,
+        "min_quality_score": 7
+      }
+    },
+    {
+      "id": "MEDIUM-002",
+      "description": "Implementar ordenacao por data na listagem de pedidos (mais recentes primeiro)",
+      "classification": "medium",
+      "expected_difficulty": 3,
+      "ground_truth": {
+        "files_changed": ["src/components/OrderList.tsx", "src/services/orders.ts"],
+        "max_lines_changed": 20,
+        "tests_should_pass": true,
+        "no_scope_creep": true,
+        "min_quality_score": 7
+      }
+    },
+    {
+      "id": "MEDIUM-003",
+      "description": "Adicionar campo 'telefone' no formulario de cadastro com validacao de formato (XX) XXXXX-XXXX",
+      "classification": "medium",
+      "expected_difficulty": 3,
+      "ground_truth": {
+        "files_changed": ["src/forms/register.tsx", "src/validators/phone.ts"],
+        "max_lines_changed": 25,
+        "tests_should_pass": true,
+        "no_scope_creep": true,
+        "min_quality_score": 7
+      }
+    },
+    {
+      "id": "COMPLEX-001",
+      "description": "Refatorar modulo de autenticacao para suportar refresh tokens com renovacao automatica",
+      "classification": "complex",
+      "expected_difficulty": 4,
+      "ground_truth": {
+        "files_changed": ["src/auth/AuthProvider.tsx", "src/services/auth.ts", "src/hooks/useAuth.ts"],
+        "max_lines_changed": 50,
+        "tests_should_pass": true,
+        "no_scope_creep": true,
+        "min_quality_score": 6
+      }
+    },
+    {
+      "id": "COMPLEX-002",
+      "description": "Implementar cache LRU para consultas ao banco de dados com expiracao configuravel",
+      "classification": "complex",
+      "expected_difficulty": 4,
+      "ground_truth": {
+        "files_changed": ["src/cache/LRUCache.ts", "src/db/queryWithCache.ts"],
+        "max_lines_changed": 60,
+        "tests_should_pass": true,
+        "no_scope_creep": true,
+        "min_quality_score": 6
+      }
+    },
+    {
+      "id": "COMPLEX-003",
+      "description": "Criar sistema de logging estruturado com niveis (debug/info/warn/error) e rotacao de arquivos",
+      "classification": "complex",
+      "expected_difficulty": 4,
+      "ground_truth": {
+        "files_changed": ["src/logger/index.ts", "src/logger/transports/file.ts"],
+        "max_lines_changed": 80,
+        "tests_should_pass": true,
+        "no_scope_creep": true,
+        "min_quality_score": 6
+      }
+    },
+    {
+      "id": "COMPLEX-004",
+      "description": "Implementar graceful shutdown para o servidor HTTP com timeout de conexoes ativas e cleanup de recursos",
+      "classification": "complex",
+      "expected_difficulty": 5,
+      "ground_truth": {
+        "files_changed": ["src/server/shutdown.ts", "src/server/index.ts"],
+        "max_lines_changed": 40,
+        "tests_should_pass": true,
+        "no_scope_creep": true,
+        "min_quality_score": 6
+      }
+    }
+  ]
+}

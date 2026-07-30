@@ -1,0 +1,44 @@
+{
+  "current_state": "context_building",
+  "previous_state": "todolist_created",
+  "last_transition": "todolist_created → context_building",
+  "last_updated": "2026-07-30T00:50:53.013Z",
+  "attempts": {},
+  "history": [
+    {
+      "from": "idle",
+      "to": "identifying",
+      "timestamp": "2026-07-30T00:50:52.704Z"
+    },
+    {
+      "from": "identifying",
+      "to": "obligations_created",
+      "timestamp": "2026-07-30T00:50:52.793Z"
+    },
+    {
+      "from": "obligations_created",
+      "to": "obligations_verified",
+      "timestamp": "2026-07-30T00:50:52.846Z"
+    },
+    {
+      "from": "obligations_verified",
+      "to": "fase1_analysis",
+      "timestamp": "2026-07-30T00:50:52.901Z"
+    },
+    {
+      "from": "fase1_analysis",
+      "to": "todolist_created",
+      "timestamp": "2026-07-30T00:50:52.959Z"
+    },
+    {
+      "from": "todolist_created",
+      "to": "context_building",
+      "timestamp": "2026-07-30T00:50:53.013Z"
+    }
+  ],
+  "pipeline_version": "1.0",
+  "metadata": {
+    "last_demand": null,
+    "last_especialista": null
+  }
+}

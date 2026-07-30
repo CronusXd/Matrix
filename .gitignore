@@ -1,0 +1,20 @@
+# Matrix — auto-generated files
+node_modules/
+.hive/
+__pycache__/
+*.pyc
+pipeline/*.db
+pipeline/context-cache.json
+pipeline/benchmark-baseline.json
+*.log
+
+# OpenCode — data directory (opencode.db, auth, repos, etc.)
+.opencode-data/
+
+# Environment variables (credentials)
+.env
+.env.local
+.env.production
+
+# Coverage
+coverage/

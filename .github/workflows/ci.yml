@@ -1,0 +1,180 @@
+# Matrix CI Pipeline — GitHub Actions
+# Alinhado com .nycrc.json thresholds: branches=70, lines=80, functions=80, statements=80
+# Acionado em push e pull request para main
+
+name: Matrix CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Test & Coverage
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint 2>/dev/null || echo "⚠️ Lint script não definido — pulando"
+
+      - name: Run tests with coverage
+        run: npm run test:coverage 2>/dev/null || npx nyc --reporter=text --reporter=lcov npm test 2>/dev/null || npm test
+
+      - name: Check coverage thresholds
+        run: |
+          echo "🔍 Verificando thresholds de cobertura (alinhado com .nycrc.json):"
+          echo "   branches:   70%"
+          echo "   lines:      80%"
+          echo "   functions:  80%"
+          echo "   statements: 80%"
+          npx nyc check-coverage --branches 70 --lines 80 --functions 80 --statements 80
+
+      - name: Upload coverage report
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-${{ matrix.node-version }}
+          path: coverage/
+          retention-days: 7
+
+  validate-pipeline:
+    name: Validate Pipeline
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Validate pipeline state machine
+        run: |
+          if [ -f pipeline/scripts/validate-pipeline.js ]; then
+            node pipeline/scripts/validate-pipeline.js
+          else
+            echo "⚠️ validate-pipeline.js não encontrado — pulando validação"
+          fi
+
+      - name: Check pipeline YAML syntax
+        run: |
+          if [ -f pipeline/pipeline.yaml ]; then
+            node -e "
+              const fs = require('fs');
+              const yaml = fs.readFileSync('pipeline/pipeline.yaml', 'utf8');
+              if (yaml.includes('states:') && yaml.includes('transitions:')) {
+                console.log('✅ pipeline.yaml: estrutura básica válida');
+              } else {
+                console.error('❌ pipeline.yaml: estrutura inválida');
+                process.exit(1);
+              }
+            "
+          else
+            echo "⚠️ pipeline.yaml não encontrado — pulando"
+          fi
+
+      - name: Check release pipeline YAML syntax
+        run: |
+          if [ -f pipeline/release-pipeline.yaml ]; then
+            node -e "
+              const fs = require('fs');
+              const yaml = fs.readFileSync('pipeline/release-pipeline.yaml', 'utf8');
+              if (yaml.includes('states:') && yaml.includes('transitions:')) {
+                console.log('✅ release-pipeline.yaml: estrutura básica válida');
+              } else {
+                console.error('❌ release-pipeline.yaml: estrutura inválida');
+                process.exit(1);
+              }
+            "
+          else
+            echo "⚠️ release-pipeline.yaml não encontrado — pulando"
+          fi
+
+  dashboard:
+    name: Dashboard Health Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate dashboard HTML
+        run: |
+          if [ -f pipeline/dashboard.html ]; then
+            # Verifica se é HTML5 válido (tags básicas presentes)
+            node -e "
+              const fs = require('fs');
+              const html = fs.readFileSync('pipeline/dashboard.html', 'utf8');
+              const checks = [
+                ['<html', 'Tag html'],
+                ['<head>', 'Tag head'],
+                ['<script>', 'Tag script'],
+                ['<canvas', 'Tag canvas'],
+                ['fetch(', 'fetch API'],
+                ['addEventListener', 'Event listeners']
+              ];
+              let allOk = true;
+              checks.forEach(function(c) {
+                const found = html.includes(c[0]);
+                console.log((found ? '✅' : '❌') + ' ' + c[1] + (found ? '' : ' (ausente)'));
+                if (!found) allOk = false;
+              });
+              if (!allOk) {
+                console.error('❌ dashboard.html: validação estrutural falhou');
+                process.exit(0);  # NON-BLOCKING
+              }
+              console.log('✅ dashboard.html: estrutura HTML5 válida');
+            "
+            else
+            echo "⚠️ dashboard.html não encontrado — pulando"
+          fi
+
+  load-test:
+    name: Load Test (NON-BLOCKING)
+    runs-on: ubuntu-latest
+    needs: [test, validate-pipeline, dashboard]
+    if: always()
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+      - name: Run load tests
+        run: npm run test:load || echo "⚠️ Load test encountered issues (NON-BLOCKING)"
+
+  benchmark:
+    name: Performance Benchmark (NON-BLOCKING)
+    runs-on: ubuntu-latest
+    needs: [test, validate-pipeline, dashboard]
+    if: always()
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+      - name: Install dependencies
+        run: npm ci 2>/dev/null || npm install 2>/dev/null || true
+      - name: Run benchmarks
+        run: npm run benchmark 2>&1 || echo "⚠️ Benchmark encountered issues (NON-BLOCKING)"

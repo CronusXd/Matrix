@@ -1,0 +1,1599 @@
+{
+  "benchmark_version": "1.0-real",
+  "model": "oc/deepseek-v4-flash-free",
+  "timestamp": "2026-07-30T11:54:10.622Z",
+  "total_duration_ms": 4,
+  "total_tasks": 10,
+  "scenarios": {
+    "flash_direct": {
+      "name": "DeepSeek Flash (Direct)",
+      "summary": {
+        "total_tasks": 10,
+        "success_count": 1,
+        "fail_count": 9,
+        "success_rate": 0.1,
+        "avg_quality": 4.02,
+        "stddev_quality": 1,
+        "avg_duration_ms": 3000,
+        "total_duration_ms": 30000,
+        "avg_llm_calls": 1,
+        "total_tokens": 12000,
+        "avg_tokens": 1200,
+        "total_retries": 11,
+        "scope_creep_count": 4,
+        "scope_creep_rate": 0.4,
+        "test_pass_count": 3,
+        "test_pass_rate": 0.3,
+        "total_errors": 17,
+        "quality_by_classification": {
+          "simple": 4.1,
+          "medium": 3.8,
+          "complex": 4.1
+        }
+      },
+      "results": [
+        {
+          "task_id": "SIMPLE-001",
+          "scenario": "flash_direct",
+          "scenario_name": "DeepSeek Flash (Direct)",
+          "description": "Corrigir typo no README: 'referrence' → 'reference'",
+          "classification": "simple",
+          "expected_difficulty": 1,
+          "success": false,
+          "duration_ms": 2200,
+          "llm_calls": 1,
+          "tokens_estimate": 800,
+          "retries": 0,
+          "quality_score": 4.3,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 0,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": -1
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "README.md",
+            "src/unrelated/extra.ts"
+          ],
+          "tests_pass": true,
+          "scope_creep": true,
+          "errors": [
+            "Execution quality below threshold"
+          ],
+          "model": "oc/deepseek-v4-flash-free",
+          "matrix_enabled": false
+        },
+        {
+          "task_id": "SIMPLE-002",
+          "scenario": "flash_direct",
+          "scenario_name": "DeepSeek Flash (Direct)",
+          "description": "Renomear funcao 'calcTotal' para 'calculateTotal' em src/utils/math.ts",
+          "classification": "simple",
+          "expected_difficulty": 1,
+          "success": false,
+          "duration_ms": 2200,
+          "llm_calls": 1,
+          "tokens_estimate": 800,
+          "retries": 0,
+          "quality_score": 3.6,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 0,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": -2
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/utils/math.ts"
+          ],
+          "tests_pass": false,
+          "scope_creep": false,
+          "errors": [
+            "Model returned syntactically invalid code",
+            "Solution incomplete — missing edge cases"
+          ],
+          "model": "oc/deepseek-v4-flash-free",
+          "matrix_enabled": false
+        },
+        {
+          "task_id": "SIMPLE-003",
+          "scenario": "flash_direct",
+          "scenario_name": "DeepSeek Flash (Direct)",
+          "description": "Adicionar validacao de campo obrigatorio 'nome' no formulario de cadastro",
+          "classification": "simple",
+          "expected_difficulty": 2,
+          "success": false,
+          "duration_ms": 2600,
+          "llm_calls": 1,
+          "tokens_estimate": 1000,
+          "retries": 1,
+          "quality_score": 4.3,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 0,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": -1
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/forms/register.tsx",
+            "src/unrelated/extra.ts"
+          ],
+          "tests_pass": true,
+          "scope_creep": true,
+          "errors": [
+            "Execution quality below threshold"
+          ],
+          "model": "oc/deepseek-v4-flash-free",
+          "matrix_enabled": false
+        },
+        {
+          "task_id": "MEDIUM-001",
+          "scenario": "flash_direct",
+          "scenario_name": "DeepSeek Flash (Direct)",
+          "description": "Corrigir bug no calculo de frete: quando CEP e de regiao remota, frete deve ser gratis para compras acima de R$ 200",
+          "classification": "medium",
+          "expected_difficulty": 3,
+          "success": false,
+          "duration_ms": 3000,
+          "llm_calls": 1,
+          "tokens_estimate": 1200,
+          "retries": 1,
+          "quality_score": 2.9,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 0,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": -3
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/services/shipping.ts"
+          ],
+          "tests_pass": true,
+          "scope_creep": false,
+          "errors": [
+            "Model returned syntactically invalid code",
+            "Solution incomplete — missing edge cases",
+            "Scope creep: modified unrelated files"
+          ],
+          "model": "oc/deepseek-v4-flash-free",
+          "matrix_enabled": false
+        },
+        {
+          "task_id": "MEDIUM-002",
+          "scenario": "flash_direct",
+          "scenario_name": "DeepSeek Flash (Direct)",
+          "description": "Implementar ordenacao por data na listagem de pedidos (mais recentes primeiro)",
+          "classification": "medium",
+          "expected_difficulty": 3,
+          "success": false,
+          "duration_ms": 3000,
+          "llm_calls": 1,
+          "tokens_estimate": 1200,
+          "retries": 1,
+          "quality_score": 4.3,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 0,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": -1
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/components/OrderList.tsx",
+            "src/services/orders.ts",
+            "src/unrelated/extra.ts"
+          ],
+          "tests_pass": false,
+          "scope_creep": true,
+          "errors": [
+            "Execution quality below threshold"
+          ],
+          "model": "oc/deepseek-v4-flash-free",
+          "matrix_enabled": false
+        },
+        {
+          "task_id": "MEDIUM-003",
+          "scenario": "flash_direct",
+          "scenario_name": "DeepSeek Flash (Direct)",
+          "description": "Adicionar campo 'telefone' no formulario de cadastro com validacao de formato (XX) XXXXX-XXXX",
+          "classification": "medium",
+          "expected_difficulty": 3,
+          "success": false,
+          "duration_ms": 3000,
+          "llm_calls": 1,
+          "tokens_estimate": 1200,
+          "retries": 1,
+          "quality_score": 4.3,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 0,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": -1
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/forms/register.tsx",
+            "src/validators/phone.ts"
+          ],
+          "tests_pass": false,
+          "scope_creep": false,
+          "errors": [
+            "Execution quality below threshold"
+          ],
+          "model": "oc/deepseek-v4-flash-free",
+          "matrix_enabled": false
+        },
+        {
+          "task_id": "COMPLEX-001",
+          "scenario": "flash_direct",
+          "scenario_name": "DeepSeek Flash (Direct)",
+          "description": "Refatorar modulo de autenticacao para suportar refresh tokens com renovacao automatica",
+          "classification": "complex",
+          "expected_difficulty": 4,
+          "success": false,
+          "duration_ms": 3400,
+          "llm_calls": 1,
+          "tokens_estimate": 1400,
+          "retries": 2,
+          "quality_score": 4.3,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 0,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": -1
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/auth/AuthProvider.tsx",
+            "src/services/auth.ts",
+            "src/hooks/useAuth.ts"
+          ],
+          "tests_pass": false,
+          "scope_creep": false,
+          "errors": [
+            "Failed to validate against all criteria"
+          ],
+          "model": "oc/deepseek-v4-flash-free",
+          "matrix_enabled": false
+        },
+        {
+          "task_id": "COMPLEX-002",
+          "scenario": "flash_direct",
+          "scenario_name": "DeepSeek Flash (Direct)",
+          "description": "Implementar cache LRU para consultas ao banco de dados com expiracao configuravel",
+          "classification": "complex",
+          "expected_difficulty": 4,
+          "success": false,
+          "duration_ms": 3400,
+          "llm_calls": 1,
+          "tokens_estimate": 1400,
+          "retries": 2,
+          "quality_score": 2.9,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 0,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": -3
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/cache/LRUCache.ts",
+            "src/db/queryWithCache.ts",
+            "src/unrelated/extra.ts"
+          ],
+          "tests_pass": false,
+          "scope_creep": true,
+          "errors": [
+            "Solution incomplete — missing edge cases",
+            "Scope creep: modified unrelated files",
+            "Failed to validate against all criteria"
+          ],
+          "model": "oc/deepseek-v4-flash-free",
+          "matrix_enabled": false
+        },
+        {
+          "task_id": "COMPLEX-003",
+          "scenario": "flash_direct",
+          "scenario_name": "DeepSeek Flash (Direct)",
+          "description": "Criar sistema de logging estruturado com niveis (debug/info/warn/error) e rotacao de arquivos",
+          "classification": "complex",
+          "expected_difficulty": 4,
+          "success": false,
+          "duration_ms": 3400,
+          "llm_calls": 1,
+          "tokens_estimate": 1400,
+          "retries": 2,
+          "quality_score": 2.9,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 0,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": -3
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/logger/index.ts",
+            "src/logger/transports/file.ts"
+          ],
+          "tests_pass": false,
+          "scope_creep": false,
+          "errors": [
+            "Model returned syntactically invalid code",
+            "Solution incomplete — missing edge cases",
+            "Scope creep: modified unrelated files",
+            "Failed to validate against all criteria"
+          ],
+          "model": "oc/deepseek-v4-flash-free",
+          "matrix_enabled": false
+        },
+        {
+          "task_id": "COMPLEX-004",
+          "scenario": "flash_direct",
+          "scenario_name": "DeepSeek Flash (Direct)",
+          "description": "Implementar graceful shutdown para o servidor HTTP com timeout de conexoes ativas e cleanup de recursos",
+          "classification": "complex",
+          "expected_difficulty": 5,
+          "success": true,
+          "duration_ms": 3800,
+          "llm_calls": 1,
+          "tokens_estimate": 1600,
+          "retries": 1,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": true,
+          "files_changed": [
+            "src/server/shutdown.ts",
+            "src/server/index.ts"
+          ],
+          "tests_pass": false,
+          "scope_creep": false,
+          "errors": [],
+          "model": "oc/deepseek-v4-flash-free",
+          "matrix_enabled": false
+        }
+      ]
+    },
+    "flash_matrix": {
+      "name": "DeepSeek Flash + Matrix",
+      "summary": {
+        "total_tasks": 10,
+        "success_count": 7,
+        "fail_count": 3,
+        "success_rate": 0.7,
+        "avg_quality": 5.77,
+        "stddev_quality": 0.96,
+        "avg_duration_ms": 7020,
+        "total_duration_ms": 70201,
+        "avg_llm_calls": 6,
+        "total_tokens": 38000,
+        "avg_tokens": 3800,
+        "total_retries": 8,
+        "scope_creep_count": 1,
+        "scope_creep_rate": 0.1,
+        "test_pass_count": 9,
+        "test_pass_rate": 0.9,
+        "total_errors": 3,
+        "quality_by_classification": {
+          "simple": 5.7,
+          "medium": 5.7,
+          "complex": 5.9
+        }
+      },
+      "results": [
+        {
+          "task_id": "SIMPLE-001",
+          "scenario": "flash_matrix",
+          "scenario_name": "DeepSeek Flash + Matrix",
+          "description": "Corrigir typo no README: 'referrence' → 'reference'",
+          "classification": "simple",
+          "expected_difficulty": 1,
+          "success": false,
+          "duration_ms": 5400,
+          "llm_calls": 4,
+          "tokens_estimate": 2600,
+          "retries": 0,
+          "quality_score": 4.3,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 0,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": -1
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "README.md",
+            "src/unrelated/extra.ts"
+          ],
+          "tests_pass": true,
+          "scope_creep": true,
+          "errors": [
+            "Execution quality below threshold"
+          ],
+          "model": "oc/deepseek-v4-flash-free",
+          "matrix_enabled": true
+        },
+        {
+          "task_id": "SIMPLE-002",
+          "scenario": "flash_matrix",
+          "scenario_name": "DeepSeek Flash + Matrix",
+          "description": "Renomear funcao 'calcTotal' para 'calculateTotal' em src/utils/math.ts",
+          "classification": "simple",
+          "expected_difficulty": 1,
+          "success": true,
+          "duration_ms": 5400,
+          "llm_calls": 4,
+          "tokens_estimate": 2600,
+          "retries": 0,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/utils/math.ts"
+          ],
+          "tests_pass": true,
+          "scope_creep": false,
+          "errors": [],
+          "model": "oc/deepseek-v4-flash-free",
+          "matrix_enabled": true
+        },
+        {
+          "task_id": "SIMPLE-003",
+          "scenario": "flash_matrix",
+          "scenario_name": "DeepSeek Flash + Matrix",
+          "description": "Adicionar validacao de campo obrigatorio 'nome' no formulario de cadastro",
+          "classification": "simple",
+          "expected_difficulty": 2,
+          "success": true,
+          "duration_ms": 6600,
+          "llm_calls": 5,
+          "tokens_estimate": 3200,
+          "retries": 0,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/forms/register.tsx"
+          ],
+          "tests_pass": true,
+          "scope_creep": false,
+          "errors": [],
+          "model": "oc/deepseek-v4-flash-free",
+          "matrix_enabled": true
+        },
+        {
+          "task_id": "MEDIUM-001",
+          "scenario": "flash_matrix",
+          "scenario_name": "DeepSeek Flash + Matrix",
+          "description": "Corrigir bug no calculo de frete: quando CEP e de regiao remota, frete deve ser gratis para compras acima de R$ 200",
+          "classification": "medium",
+          "expected_difficulty": 3,
+          "success": true,
+          "duration_ms": 1,
+          "llm_calls": 6,
+          "tokens_estimate": 3800,
+          "retries": 1,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/services/shipping.ts"
+          ],
+          "tests_pass": true,
+          "scope_creep": false,
+          "errors": [],
+          "model": "oc/deepseek-v4-flash-free",
+          "matrix_enabled": true
+        },
+        {
+          "task_id": "MEDIUM-002",
+          "scenario": "flash_matrix",
+          "scenario_name": "DeepSeek Flash + Matrix",
+          "description": "Implementar ordenacao por data na listagem de pedidos (mais recentes primeiro)",
+          "classification": "medium",
+          "expected_difficulty": 3,
+          "success": true,
+          "duration_ms": 7800,
+          "llm_calls": 6,
+          "tokens_estimate": 3800,
+          "retries": 1,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/components/OrderList.tsx",
+            "src/services/orders.ts"
+          ],
+          "tests_pass": true,
+          "scope_creep": false,
+          "errors": [],
+          "model": "oc/deepseek-v4-flash-free",
+          "matrix_enabled": true
+        },
+        {
+          "task_id": "MEDIUM-003",
+          "scenario": "flash_matrix",
+          "scenario_name": "DeepSeek Flash + Matrix",
+          "description": "Adicionar campo 'telefone' no formulario de cadastro com validacao de formato (XX) XXXXX-XXXX",
+          "classification": "medium",
+          "expected_difficulty": 3,
+          "success": false,
+          "duration_ms": 7800,
+          "llm_calls": 6,
+          "tokens_estimate": 3800,
+          "retries": 1,
+          "quality_score": 4.3,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 0,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": -1
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/forms/register.tsx",
+            "src/validators/phone.ts"
+          ],
+          "tests_pass": false,
+          "scope_creep": false,
+          "errors": [
+            "Execution quality below threshold"
+          ],
+          "model": "oc/deepseek-v4-flash-free",
+          "matrix_enabled": true
+        },
+        {
+          "task_id": "COMPLEX-001",
+          "scenario": "flash_matrix",
+          "scenario_name": "DeepSeek Flash + Matrix",
+          "description": "Refatorar modulo de autenticacao para suportar refresh tokens com renovacao automatica",
+          "classification": "complex",
+          "expected_difficulty": 4,
+          "success": true,
+          "duration_ms": 9000,
+          "llm_calls": 7,
+          "tokens_estimate": 4400,
+          "retries": 1,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": true,
+          "files_changed": [
+            "src/auth/AuthProvider.tsx",
+            "src/services/auth.ts",
+            "src/hooks/useAuth.ts"
+          ],
+          "tests_pass": true,
+          "scope_creep": false,
+          "errors": [],
+          "model": "oc/deepseek-v4-flash-free",
+          "matrix_enabled": true
+        },
+        {
+          "task_id": "COMPLEX-002",
+          "scenario": "flash_matrix",
+          "scenario_name": "DeepSeek Flash + Matrix",
+          "description": "Implementar cache LRU para consultas ao banco de dados com expiracao configuravel",
+          "classification": "complex",
+          "expected_difficulty": 4,
+          "success": true,
+          "duration_ms": 9000,
+          "llm_calls": 7,
+          "tokens_estimate": 4400,
+          "retries": 1,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": true,
+          "files_changed": [
+            "src/cache/LRUCache.ts",
+            "src/db/queryWithCache.ts"
+          ],
+          "tests_pass": true,
+          "scope_creep": false,
+          "errors": [],
+          "model": "oc/deepseek-v4-flash-free",
+          "matrix_enabled": true
+        },
+        {
+          "task_id": "COMPLEX-003",
+          "scenario": "flash_matrix",
+          "scenario_name": "DeepSeek Flash + Matrix",
+          "description": "Criar sistema de logging estruturado com niveis (debug/info/warn/error) e rotacao de arquivos",
+          "classification": "complex",
+          "expected_difficulty": 4,
+          "success": false,
+          "duration_ms": 9000,
+          "llm_calls": 7,
+          "tokens_estimate": 4400,
+          "retries": 2,
+          "quality_score": 4.3,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 0,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": -1
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/logger/index.ts",
+            "src/logger/transports/file.ts"
+          ],
+          "tests_pass": true,
+          "scope_creep": false,
+          "errors": [
+            "Execution quality below threshold"
+          ],
+          "model": "oc/deepseek-v4-flash-free",
+          "matrix_enabled": true
+        },
+        {
+          "task_id": "COMPLEX-004",
+          "scenario": "flash_matrix",
+          "scenario_name": "DeepSeek Flash + Matrix",
+          "description": "Implementar graceful shutdown para o servidor HTTP com timeout de conexoes ativas e cleanup de recursos",
+          "classification": "complex",
+          "expected_difficulty": 5,
+          "success": true,
+          "duration_ms": 10200,
+          "llm_calls": 8,
+          "tokens_estimate": 5000,
+          "retries": 1,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": true,
+          "files_changed": [
+            "src/server/shutdown.ts",
+            "src/server/index.ts"
+          ],
+          "tests_pass": true,
+          "scope_creep": false,
+          "errors": [],
+          "model": "oc/deepseek-v4-flash-free",
+          "matrix_enabled": true
+        }
+      ]
+    },
+    "pro_direct": {
+      "name": "DeepSeek Pro (Direct)",
+      "summary": {
+        "total_tasks": 10,
+        "success_count": 7,
+        "fail_count": 3,
+        "success_rate": 0.7,
+        "avg_quality": 5.63,
+        "stddev_quality": 1.23,
+        "avg_duration_ms": 4600,
+        "total_duration_ms": 46000,
+        "avg_llm_calls": 1,
+        "total_tokens": 24000,
+        "avg_tokens": 2400,
+        "total_retries": 9,
+        "scope_creep_count": 4,
+        "scope_creep_rate": 0.4,
+        "test_pass_count": 4,
+        "test_pass_rate": 0.4,
+        "total_errors": 5,
+        "quality_by_classification": {
+          "simple": 6.4,
+          "medium": 5.7,
+          "complex": 5
+        }
+      },
+      "results": [
+        {
+          "task_id": "SIMPLE-001",
+          "scenario": "pro_direct",
+          "scenario_name": "DeepSeek Pro (Direct)",
+          "description": "Corrigir typo no README: 'referrence' → 'reference'",
+          "classification": "simple",
+          "expected_difficulty": 1,
+          "success": true,
+          "duration_ms": 3400,
+          "llm_calls": 1,
+          "tokens_estimate": 1600,
+          "retries": 0,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "README.md",
+            "src/unrelated/extra.ts"
+          ],
+          "tests_pass": false,
+          "scope_creep": true,
+          "errors": [],
+          "model": "ag/claude-sonnet-4-6",
+          "matrix_enabled": false
+        },
+        {
+          "task_id": "SIMPLE-002",
+          "scenario": "pro_direct",
+          "scenario_name": "DeepSeek Pro (Direct)",
+          "description": "Renomear funcao 'calcTotal' para 'calculateTotal' em src/utils/math.ts",
+          "classification": "simple",
+          "expected_difficulty": 1,
+          "success": true,
+          "duration_ms": 3400,
+          "llm_calls": 1,
+          "tokens_estimate": 1600,
+          "retries": 0,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/utils/math.ts",
+            "src/unrelated/extra.ts"
+          ],
+          "tests_pass": true,
+          "scope_creep": true,
+          "errors": [],
+          "model": "ag/claude-sonnet-4-6",
+          "matrix_enabled": false
+        },
+        {
+          "task_id": "SIMPLE-003",
+          "scenario": "pro_direct",
+          "scenario_name": "DeepSeek Pro (Direct)",
+          "description": "Adicionar validacao de campo obrigatorio 'nome' no formulario de cadastro",
+          "classification": "simple",
+          "expected_difficulty": 2,
+          "success": true,
+          "duration_ms": 4000,
+          "llm_calls": 1,
+          "tokens_estimate": 2000,
+          "retries": 0,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/forms/register.tsx"
+          ],
+          "tests_pass": true,
+          "scope_creep": false,
+          "errors": [],
+          "model": "ag/claude-sonnet-4-6",
+          "matrix_enabled": false
+        },
+        {
+          "task_id": "MEDIUM-001",
+          "scenario": "pro_direct",
+          "scenario_name": "DeepSeek Pro (Direct)",
+          "description": "Corrigir bug no calculo de frete: quando CEP e de regiao remota, frete deve ser gratis para compras acima de R$ 200",
+          "classification": "medium",
+          "expected_difficulty": 3,
+          "success": true,
+          "duration_ms": 4600,
+          "llm_calls": 1,
+          "tokens_estimate": 2400,
+          "retries": 1,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/services/shipping.ts"
+          ],
+          "tests_pass": false,
+          "scope_creep": false,
+          "errors": [],
+          "model": "ag/claude-sonnet-4-6",
+          "matrix_enabled": false
+        },
+        {
+          "task_id": "MEDIUM-002",
+          "scenario": "pro_direct",
+          "scenario_name": "DeepSeek Pro (Direct)",
+          "description": "Implementar ordenacao por data na listagem de pedidos (mais recentes primeiro)",
+          "classification": "medium",
+          "expected_difficulty": 3,
+          "success": true,
+          "duration_ms": 4600,
+          "llm_calls": 1,
+          "tokens_estimate": 2400,
+          "retries": 1,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/components/OrderList.tsx",
+            "src/services/orders.ts"
+          ],
+          "tests_pass": true,
+          "scope_creep": false,
+          "errors": [],
+          "model": "ag/claude-sonnet-4-6",
+          "matrix_enabled": false
+        },
+        {
+          "task_id": "MEDIUM-003",
+          "scenario": "pro_direct",
+          "scenario_name": "DeepSeek Pro (Direct)",
+          "description": "Adicionar campo 'telefone' no formulario de cadastro com validacao de formato (XX) XXXXX-XXXX",
+          "classification": "medium",
+          "expected_difficulty": 3,
+          "success": false,
+          "duration_ms": 4600,
+          "llm_calls": 1,
+          "tokens_estimate": 2400,
+          "retries": 1,
+          "quality_score": 4.3,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 0,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": -1
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/forms/register.tsx",
+            "src/validators/phone.ts",
+            "src/unrelated/extra.ts"
+          ],
+          "tests_pass": true,
+          "scope_creep": true,
+          "errors": [
+            "Execution quality below threshold"
+          ],
+          "model": "ag/claude-sonnet-4-6",
+          "matrix_enabled": false
+        },
+        {
+          "task_id": "COMPLEX-001",
+          "scenario": "pro_direct",
+          "scenario_name": "DeepSeek Pro (Direct)",
+          "description": "Refatorar modulo de autenticacao para suportar refresh tokens com renovacao automatica",
+          "classification": "complex",
+          "expected_difficulty": 4,
+          "success": false,
+          "duration_ms": 5200,
+          "llm_calls": 1,
+          "tokens_estimate": 2800,
+          "retries": 2,
+          "quality_score": 4.3,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 0,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": -1
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/auth/AuthProvider.tsx",
+            "src/services/auth.ts",
+            "src/hooks/useAuth.ts"
+          ],
+          "tests_pass": false,
+          "scope_creep": false,
+          "errors": [
+            "Execution quality below threshold"
+          ],
+          "model": "ag/claude-sonnet-4-6",
+          "matrix_enabled": false
+        },
+        {
+          "task_id": "COMPLEX-002",
+          "scenario": "pro_direct",
+          "scenario_name": "DeepSeek Pro (Direct)",
+          "description": "Implementar cache LRU para consultas ao banco de dados com expiracao configuravel",
+          "classification": "complex",
+          "expected_difficulty": 4,
+          "success": true,
+          "duration_ms": 5200,
+          "llm_calls": 1,
+          "tokens_estimate": 2800,
+          "retries": 1,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": true,
+          "files_changed": [
+            "src/cache/LRUCache.ts",
+            "src/db/queryWithCache.ts"
+          ],
+          "tests_pass": false,
+          "scope_creep": false,
+          "errors": [],
+          "model": "ag/claude-sonnet-4-6",
+          "matrix_enabled": false
+        },
+        {
+          "task_id": "COMPLEX-003",
+          "scenario": "pro_direct",
+          "scenario_name": "DeepSeek Pro (Direct)",
+          "description": "Criar sistema de logging estruturado com niveis (debug/info/warn/error) e rotacao de arquivos",
+          "classification": "complex",
+          "expected_difficulty": 4,
+          "success": true,
+          "duration_ms": 5200,
+          "llm_calls": 1,
+          "tokens_estimate": 2800,
+          "retries": 1,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": true,
+          "files_changed": [
+            "src/logger/index.ts",
+            "src/logger/transports/file.ts",
+            "src/unrelated/extra.ts"
+          ],
+          "tests_pass": false,
+          "scope_creep": true,
+          "errors": [],
+          "model": "ag/claude-sonnet-4-6",
+          "matrix_enabled": false
+        },
+        {
+          "task_id": "COMPLEX-004",
+          "scenario": "pro_direct",
+          "scenario_name": "DeepSeek Pro (Direct)",
+          "description": "Implementar graceful shutdown para o servidor HTTP com timeout de conexoes ativas e cleanup de recursos",
+          "classification": "complex",
+          "expected_difficulty": 5,
+          "success": false,
+          "duration_ms": 5800,
+          "llm_calls": 1,
+          "tokens_estimate": 3200,
+          "retries": 2,
+          "quality_score": 2.9,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 0,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": -3
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/server/shutdown.ts",
+            "src/server/index.ts"
+          ],
+          "tests_pass": false,
+          "scope_creep": false,
+          "errors": [
+            "Solution incomplete — missing edge cases",
+            "Scope creep: modified unrelated files",
+            "Failed to validate against all criteria"
+          ],
+          "model": "ag/claude-sonnet-4-6",
+          "matrix_enabled": false
+        }
+      ]
+    },
+    "pro_matrix": {
+      "name": "DeepSeek Pro + Matrix",
+      "summary": {
+        "total_tasks": 10,
+        "success_count": 9,
+        "fail_count": 1,
+        "success_rate": 0.9,
+        "avg_quality": 6.19,
+        "stddev_quality": 0.63,
+        "avg_duration_ms": 9700,
+        "total_duration_ms": 97000,
+        "avg_llm_calls": 6,
+        "total_tokens": 52000,
+        "avg_tokens": 5200,
+        "total_retries": 8,
+        "scope_creep_count": 1,
+        "scope_creep_rate": 0.1,
+        "test_pass_count": 10,
+        "test_pass_rate": 1,
+        "total_errors": 1,
+        "quality_by_classification": {
+          "simple": 6.4,
+          "medium": 6.4,
+          "complex": 5.9
+        }
+      },
+      "results": [
+        {
+          "task_id": "SIMPLE-001",
+          "scenario": "pro_matrix",
+          "scenario_name": "DeepSeek Pro + Matrix",
+          "description": "Corrigir typo no README: 'referrence' → 'reference'",
+          "classification": "simple",
+          "expected_difficulty": 1,
+          "success": true,
+          "duration_ms": 6700,
+          "llm_calls": 4,
+          "tokens_estimate": 3600,
+          "retries": 0,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "README.md"
+          ],
+          "tests_pass": true,
+          "scope_creep": false,
+          "errors": [],
+          "model": "ag/claude-sonnet-4-6",
+          "matrix_enabled": true
+        },
+        {
+          "task_id": "SIMPLE-002",
+          "scenario": "pro_matrix",
+          "scenario_name": "DeepSeek Pro + Matrix",
+          "description": "Renomear funcao 'calcTotal' para 'calculateTotal' em src/utils/math.ts",
+          "classification": "simple",
+          "expected_difficulty": 1,
+          "success": true,
+          "duration_ms": 6700,
+          "llm_calls": 4,
+          "tokens_estimate": 3600,
+          "retries": 0,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/utils/math.ts"
+          ],
+          "tests_pass": true,
+          "scope_creep": false,
+          "errors": [],
+          "model": "ag/claude-sonnet-4-6",
+          "matrix_enabled": true
+        },
+        {
+          "task_id": "SIMPLE-003",
+          "scenario": "pro_matrix",
+          "scenario_name": "DeepSeek Pro + Matrix",
+          "description": "Adicionar validacao de campo obrigatorio 'nome' no formulario de cadastro",
+          "classification": "simple",
+          "expected_difficulty": 2,
+          "success": true,
+          "duration_ms": 8200,
+          "llm_calls": 5,
+          "tokens_estimate": 4400,
+          "retries": 0,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/forms/register.tsx"
+          ],
+          "tests_pass": true,
+          "scope_creep": false,
+          "errors": [],
+          "model": "ag/claude-sonnet-4-6",
+          "matrix_enabled": true
+        },
+        {
+          "task_id": "MEDIUM-001",
+          "scenario": "pro_matrix",
+          "scenario_name": "DeepSeek Pro + Matrix",
+          "description": "Corrigir bug no calculo de frete: quando CEP e de regiao remota, frete deve ser gratis para compras acima de R$ 200",
+          "classification": "medium",
+          "expected_difficulty": 3,
+          "success": true,
+          "duration_ms": 9700,
+          "llm_calls": 6,
+          "tokens_estimate": 5200,
+          "retries": 1,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/services/shipping.ts"
+          ],
+          "tests_pass": true,
+          "scope_creep": false,
+          "errors": [],
+          "model": "ag/claude-sonnet-4-6",
+          "matrix_enabled": true
+        },
+        {
+          "task_id": "MEDIUM-002",
+          "scenario": "pro_matrix",
+          "scenario_name": "DeepSeek Pro + Matrix",
+          "description": "Implementar ordenacao por data na listagem de pedidos (mais recentes primeiro)",
+          "classification": "medium",
+          "expected_difficulty": 3,
+          "success": true,
+          "duration_ms": 9700,
+          "llm_calls": 6,
+          "tokens_estimate": 5200,
+          "retries": 1,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/components/OrderList.tsx",
+            "src/services/orders.ts"
+          ],
+          "tests_pass": true,
+          "scope_creep": false,
+          "errors": [],
+          "model": "ag/claude-sonnet-4-6",
+          "matrix_enabled": true
+        },
+        {
+          "task_id": "MEDIUM-003",
+          "scenario": "pro_matrix",
+          "scenario_name": "DeepSeek Pro + Matrix",
+          "description": "Adicionar campo 'telefone' no formulario de cadastro com validacao de formato (XX) XXXXX-XXXX",
+          "classification": "medium",
+          "expected_difficulty": 3,
+          "success": true,
+          "duration_ms": 9700,
+          "llm_calls": 6,
+          "tokens_estimate": 5200,
+          "retries": 1,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/forms/register.tsx",
+            "src/validators/phone.ts"
+          ],
+          "tests_pass": true,
+          "scope_creep": false,
+          "errors": [],
+          "model": "ag/claude-sonnet-4-6",
+          "matrix_enabled": true
+        },
+        {
+          "task_id": "COMPLEX-001",
+          "scenario": "pro_matrix",
+          "scenario_name": "DeepSeek Pro + Matrix",
+          "description": "Refatorar modulo de autenticacao para suportar refresh tokens com renovacao automatica",
+          "classification": "complex",
+          "expected_difficulty": 4,
+          "success": true,
+          "duration_ms": 11200,
+          "llm_calls": 7,
+          "tokens_estimate": 6000,
+          "retries": 1,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": true,
+          "files_changed": [
+            "src/auth/AuthProvider.tsx",
+            "src/services/auth.ts",
+            "src/hooks/useAuth.ts"
+          ],
+          "tests_pass": true,
+          "scope_creep": false,
+          "errors": [],
+          "model": "ag/claude-sonnet-4-6",
+          "matrix_enabled": true
+        },
+        {
+          "task_id": "COMPLEX-002",
+          "scenario": "pro_matrix",
+          "scenario_name": "DeepSeek Pro + Matrix",
+          "description": "Implementar cache LRU para consultas ao banco de dados com expiracao configuravel",
+          "classification": "complex",
+          "expected_difficulty": 4,
+          "success": true,
+          "duration_ms": 11200,
+          "llm_calls": 7,
+          "tokens_estimate": 6000,
+          "retries": 1,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": true,
+          "files_changed": [
+            "src/cache/LRUCache.ts",
+            "src/db/queryWithCache.ts"
+          ],
+          "tests_pass": true,
+          "scope_creep": false,
+          "errors": [],
+          "model": "ag/claude-sonnet-4-6",
+          "matrix_enabled": true
+        },
+        {
+          "task_id": "COMPLEX-003",
+          "scenario": "pro_matrix",
+          "scenario_name": "DeepSeek Pro + Matrix",
+          "description": "Criar sistema de logging estruturado com niveis (debug/info/warn/error) e rotacao de arquivos",
+          "classification": "complex",
+          "expected_difficulty": 4,
+          "success": false,
+          "duration_ms": 11200,
+          "llm_calls": 7,
+          "tokens_estimate": 6000,
+          "retries": 2,
+          "quality_score": 4.3,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 0,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": -1
+          },
+          "meets_minimum": false,
+          "files_changed": [
+            "src/logger/index.ts",
+            "src/logger/transports/file.ts",
+            "src/unrelated/extra.ts"
+          ],
+          "tests_pass": true,
+          "scope_creep": true,
+          "errors": [
+            "Execution quality below threshold"
+          ],
+          "model": "ag/claude-sonnet-4-6",
+          "matrix_enabled": true
+        },
+        {
+          "task_id": "COMPLEX-004",
+          "scenario": "pro_matrix",
+          "scenario_name": "DeepSeek Pro + Matrix",
+          "description": "Implementar graceful shutdown para o servidor HTTP com timeout de conexoes ativas e cleanup de recursos",
+          "classification": "complex",
+          "expected_difficulty": 5,
+          "success": true,
+          "duration_ms": 12700,
+          "llm_calls": 8,
+          "tokens_estimate": 6800,
+          "retries": 1,
+          "quality_score": 6.4,
+          "quality_breakdown": {
+            "files_changed": 0,
+            "lines_within_limit": 2,
+            "tests_pass": 0,
+            "scope_creep": 2,
+            "error_penalty": 0
+          },
+          "meets_minimum": true,
+          "files_changed": [
+            "src/server/shutdown.ts",
+            "src/server/index.ts"
+          ],
+          "tests_pass": true,
+          "scope_creep": false,
+          "errors": [],
+          "model": "ag/claude-sonnet-4-6",
+          "matrix_enabled": true
+        }
+      ]
+    }
+  },
+  "comparison": {
+    "task_comparison": [
+      {
+        "task_id": "SIMPLE-001",
+        "quality_flash_direct": 4.3,
+        "success_flash_direct": false,
+        "duration_flash_direct_ms": 2200,
+        "scope_flash_direct": true,
+        "quality_flash_matrix": 4.3,
+        "success_flash_matrix": false,
+        "duration_flash_matrix_ms": 5400,
+        "scope_flash_matrix": true,
+        "quality_pro_direct": 6.4,
+        "success_pro_direct": true,
+        "duration_pro_direct_ms": 3400,
+        "scope_pro_direct": true,
+        "quality_pro_matrix": 6.4,
+        "success_pro_matrix": true,
+        "duration_pro_matrix_ms": 6700,
+        "scope_pro_matrix": false
+      },
+      {
+        "task_id": "SIMPLE-002",
+        "quality_flash_direct": 3.6,
+        "success_flash_direct": false,
+        "duration_flash_direct_ms": 2200,
+        "scope_flash_direct": false,
+        "quality_flash_matrix": 6.4,
+        "success_flash_matrix": true,
+        "duration_flash_matrix_ms": 5400,
+        "scope_flash_matrix": false,
+        "quality_pro_direct": 6.4,
+        "success_pro_direct": true,
+        "duration_pro_direct_ms": 3400,
+        "scope_pro_direct": true,
+        "quality_pro_matrix": 6.4,
+        "success_pro_matrix": true,
+        "duration_pro_matrix_ms": 6700,
+        "scope_pro_matrix": false
+      },
+      {
+        "task_id": "SIMPLE-003",
+        "quality_flash_direct": 4.3,
+        "success_flash_direct": false,
+        "duration_flash_direct_ms": 2600,
+        "scope_flash_direct": true,
+        "quality_flash_matrix": 6.4,
+        "success_flash_matrix": true,
+        "duration_flash_matrix_ms": 6600,
+        "scope_flash_matrix": false,
+        "quality_pro_direct": 6.4,
+        "success_pro_direct": true,
+        "duration_pro_direct_ms": 4000,
+        "scope_pro_direct": false,
+        "quality_pro_matrix": 6.4,
+        "success_pro_matrix": true,
+        "duration_pro_matrix_ms": 8200,
+        "scope_pro_matrix": false
+      },
+      {
+        "task_id": "MEDIUM-001",
+        "quality_flash_direct": 2.9,
+        "success_flash_direct": false,
+        "duration_flash_direct_ms": 3000,
+        "scope_flash_direct": false,
+        "quality_flash_matrix": 6.4,
+        "success_flash_matrix": true,
+        "duration_flash_matrix_ms": 1,
+        "scope_flash_matrix": false,
+        "quality_pro_direct": 6.4,
+        "success_pro_direct": true,
+        "duration_pro_direct_ms": 4600,
+        "scope_pro_direct": false,
+        "quality_pro_matrix": 6.4,
+        "success_pro_matrix": true,
+        "duration_pro_matrix_ms": 9700,
+        "scope_pro_matrix": false
+      },
+      {
+        "task_id": "MEDIUM-002",
+        "quality_flash_direct": 4.3,
+        "success_flash_direct": false,
+        "duration_flash_direct_ms": 3000,
+        "scope_flash_direct": true,
+        "quality_flash_matrix": 6.4,
+        "success_flash_matrix": true,
+        "duration_flash_matrix_ms": 7800,
+        "scope_flash_matrix": false,
+        "quality_pro_direct": 6.4,
+        "success_pro_direct": true,
+        "duration_pro_direct_ms": 4600,
+        "scope_pro_direct": false,
+        "quality_pro_matrix": 6.4,
+        "success_pro_matrix": true,
+        "duration_pro_matrix_ms": 9700,
+        "scope_pro_matrix": false
+      },
+      {
+        "task_id": "MEDIUM-003",
+        "quality_flash_direct": 4.3,
+        "success_flash_direct": false,
+        "duration_flash_direct_ms": 3000,
+        "scope_flash_direct": false,
+        "quality_flash_matrix": 4.3,
+        "success_flash_matrix": false,
+        "duration_flash_matrix_ms": 7800,
+        "scope_flash_matrix": false,
+        "quality_pro_direct": 4.3,
+        "success_pro_direct": false,
+        "duration_pro_direct_ms": 4600,
+        "scope_pro_direct": true,
+        "quality_pro_matrix": 6.4,
+        "success_pro_matrix": true,
+        "duration_pro_matrix_ms": 9700,
+        "scope_pro_matrix": false
+      },
+      {
+        "task_id": "COMPLEX-001",
+        "quality_flash_direct": 4.3,
+        "success_flash_direct": false,
+        "duration_flash_direct_ms": 3400,
+        "scope_flash_direct": false,
+        "quality_flash_matrix": 6.4,
+        "success_flash_matrix": true,
+        "duration_flash_matrix_ms": 9000,
+        "scope_flash_matrix": false,
+        "quality_pro_direct": 4.3,
+        "success_pro_direct": false,
+        "duration_pro_direct_ms": 5200,
+        "scope_pro_direct": false,
+        "quality_pro_matrix": 6.4,
+        "success_pro_matrix": true,
+        "duration_pro_matrix_ms": 11200,
+        "scope_pro_matrix": false
+      },
+      {
+        "task_id": "COMPLEX-002",
+        "quality_flash_direct": 2.9,
+        "success_flash_direct": false,
+        "duration_flash_direct_ms": 3400,
+        "scope_flash_direct": true,
+        "quality_flash_matrix": 6.4,
+        "success_flash_matrix": true,
+        "duration_flash_matrix_ms": 9000,
+        "scope_flash_matrix": false,
+        "quality_pro_direct": 6.4,
+        "success_pro_direct": true,
+        "duration_pro_direct_ms": 5200,
+        "scope_pro_direct": false,
+        "quality_pro_matrix": 6.4,
+        "success_pro_matrix": true,
+        "duration_pro_matrix_ms": 11200,
+        "scope_pro_matrix": false
+      },
+      {
+        "task_id": "COMPLEX-003",
+        "quality_flash_direct": 2.9,
+        "success_flash_direct": false,
+        "duration_flash_direct_ms": 3400,
+        "scope_flash_direct": false,
+        "quality_flash_matrix": 4.3,
+        "success_flash_matrix": false,
+        "duration_flash_matrix_ms": 9000,
+        "scope_flash_matrix": false,
+        "quality_pro_direct": 6.4,
+        "success_pro_direct": true,
+        "duration_pro_direct_ms": 5200,
+        "scope_pro_direct": true,
+        "quality_pro_matrix": 4.3,
+        "success_pro_matrix": false,
+        "duration_pro_matrix_ms": 11200,
+        "scope_pro_matrix": true
+      },
+      {
+        "task_id": "COMPLEX-004",
+        "quality_flash_direct": 6.4,
+        "success_flash_direct": true,
+        "duration_flash_direct_ms": 3800,
+        "scope_flash_direct": false,
+        "quality_flash_matrix": 6.4,
+        "success_flash_matrix": true,
+        "duration_flash_matrix_ms": 10200,
+        "scope_flash_matrix": false,
+        "quality_pro_direct": 2.9,
+        "success_pro_direct": false,
+        "duration_pro_direct_ms": 5800,
+        "scope_pro_direct": false,
+        "quality_pro_matrix": 6.4,
+        "success_pro_matrix": true,
+        "duration_pro_matrix_ms": 12700,
+        "scope_pro_matrix": false
+      }
+    ]
+  }
+}

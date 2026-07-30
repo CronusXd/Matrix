@@ -1,0 +1,869 @@
+{
+  "benchmark_version": "1.0",
+  "model": "oc/deepseek-v4-flash-free",
+  "timestamp": "2026-07-30T11:54:18.126Z",
+  "total_duration_ms": 8,
+  "simulate": true,
+  "scenario_a": {
+    "name": "Sem Matrix (Direct)",
+    "total_tasks": 10,
+    "success_rate": 0.1,
+    "avg_quality_score": 5.51,
+    "stddev_quality_score": 1.84,
+    "avg_duration_ms": 2047,
+    "avg_llm_calls": 0.1,
+    "avg_tokens": 284,
+    "scope_creep_rate": 0.6,
+    "test_pass_rate": 0.1,
+    "quality_by_classification": {
+      "simple": 3.6,
+      "medium": 6.6,
+      "complex": 6.1
+    },
+    "results": [
+      {
+        "task_id": "SIMPLE-001",
+        "scenario": "A",
+        "description": "Corrigir typo no README: 'referrence' → 'reference'",
+        "classification": "simple",
+        "expected_difficulty": 1,
+        "success": false,
+        "duration_ms": 1091,
+        "llm_calls": 0,
+        "tokens_estimate": 35,
+        "retries": 0,
+        "quality_score": 3.6,
+        "quality_breakdown": {
+          "files_changed": 3,
+          "lines_within_limit": 0,
+          "tests_pass": 0,
+          "scope_creep": -2,
+          "error_penalty": -1
+        },
+        "files_changed": [
+          "README.md",
+          "src/unrelated/extra.ts"
+        ],
+        "tests_pass": false,
+        "scope_creep": true,
+        "errors": [
+          "Model returned syntactically invalid code"
+        ]
+      },
+      {
+        "task_id": "SIMPLE-002",
+        "scenario": "A",
+        "description": "Renomear funcao 'calcTotal' para 'calculateTotal' em src/utils/math.ts",
+        "classification": "simple",
+        "expected_difficulty": 1,
+        "success": false,
+        "duration_ms": 960,
+        "llm_calls": 0,
+        "tokens_estimate": 22,
+        "retries": 0,
+        "quality_score": 3.6,
+        "quality_breakdown": {
+          "files_changed": 3,
+          "lines_within_limit": 0,
+          "tests_pass": 0,
+          "scope_creep": -2,
+          "error_penalty": -1
+        },
+        "files_changed": [
+          "src/utils/math.ts",
+          "src/unrelated/extra.ts"
+        ],
+        "tests_pass": false,
+        "scope_creep": true,
+        "errors": [
+          "Model returned syntactically invalid code"
+        ]
+      },
+      {
+        "task_id": "SIMPLE-003",
+        "scenario": "A",
+        "description": "Adicionar validacao de campo obrigatorio 'nome' no formulario de cadastro",
+        "classification": "simple",
+        "expected_difficulty": 2,
+        "success": false,
+        "duration_ms": 1492,
+        "llm_calls": 0,
+        "tokens_estimate": 80,
+        "retries": 0,
+        "quality_score": 3.6,
+        "quality_breakdown": {
+          "files_changed": 3,
+          "lines_within_limit": 0,
+          "tests_pass": 0,
+          "scope_creep": -2,
+          "error_penalty": -1
+        },
+        "files_changed": [
+          "src/forms/register.tsx",
+          "src/unrelated/extra.ts"
+        ],
+        "tests_pass": false,
+        "scope_creep": true,
+        "errors": [
+          "Model returned syntactically invalid code"
+        ]
+      },
+      {
+        "task_id": "MEDIUM-001",
+        "scenario": "A",
+        "description": "Corrigir bug no calculo de frete: quando CEP e de regiao remota, frete deve ser gratis para compras acima de R$ 200",
+        "classification": "medium",
+        "expected_difficulty": 3,
+        "success": false,
+        "duration_ms": 1426,
+        "llm_calls": 0,
+        "tokens_estimate": 181,
+        "retries": 0,
+        "quality_score": 6.4,
+        "quality_breakdown": {
+          "files_changed": 3,
+          "lines_within_limit": 0,
+          "tests_pass": 0,
+          "scope_creep": 2,
+          "error_penalty": -1
+        },
+        "files_changed": [
+          "src/services/shipping.ts"
+        ],
+        "tests_pass": false,
+        "scope_creep": false,
+        "errors": [
+          "Model returned syntactically invalid code"
+        ]
+      },
+      {
+        "task_id": "MEDIUM-002",
+        "scenario": "A",
+        "description": "Implementar ordenacao por data na listagem de pedidos (mais recentes primeiro)",
+        "classification": "medium",
+        "expected_difficulty": 3,
+        "success": true,
+        "duration_ms": 1830,
+        "llm_calls": 1,
+        "tokens_estimate": 610,
+        "retries": 0,
+        "quality_score": 7.1,
+        "quality_breakdown": {
+          "files_changed": 3,
+          "lines_within_limit": 2,
+          "tests_pass": 2,
+          "scope_creep": -2,
+          "error_penalty": 0
+        },
+        "files_changed": [
+          "src/components/OrderList.tsx",
+          "src/services/orders.ts",
+          "src/unrelated/extra.ts"
+        ],
+        "tests_pass": true,
+        "scope_creep": true,
+        "errors": []
+      },
+      {
+        "task_id": "MEDIUM-003",
+        "scenario": "A",
+        "description": "Adicionar campo 'telefone' no formulario de cadastro com validacao de formato (XX) XXXXX-XXXX",
+        "classification": "medium",
+        "expected_difficulty": 3,
+        "success": false,
+        "duration_ms": 1631,
+        "llm_calls": 0,
+        "tokens_estimate": 194,
+        "retries": 0,
+        "quality_score": 6.4,
+        "quality_breakdown": {
+          "files_changed": 3,
+          "lines_within_limit": 0,
+          "tests_pass": 0,
+          "scope_creep": 2,
+          "error_penalty": -1
+        },
+        "files_changed": [
+          "src/forms/register.tsx",
+          "src/validators/phone.ts"
+        ],
+        "tests_pass": false,
+        "scope_creep": false,
+        "errors": [
+          "Unknown execution failure"
+        ]
+      },
+      {
+        "task_id": "COMPLEX-001",
+        "scenario": "A",
+        "description": "Refatorar modulo de autenticacao para suportar refresh tokens com renovacao automatica",
+        "classification": "complex",
+        "expected_difficulty": 4,
+        "success": false,
+        "duration_ms": 2447,
+        "llm_calls": 0,
+        "tokens_estimate": 378,
+        "retries": 0,
+        "quality_score": 7.9,
+        "quality_breakdown": {
+          "files_changed": 3,
+          "lines_within_limit": 2,
+          "tests_pass": 0,
+          "scope_creep": 2,
+          "error_penalty": -1
+        },
+        "files_changed": [
+          "src/auth/AuthProvider.tsx",
+          "src/services/auth.ts",
+          "src/hooks/useAuth.ts"
+        ],
+        "tests_pass": false,
+        "scope_creep": false,
+        "errors": [
+          "Model returned syntactically invalid code"
+        ]
+      },
+      {
+        "task_id": "COMPLEX-002",
+        "scenario": "A",
+        "description": "Implementar cache LRU para consultas ao banco de dados com expiracao configuravel",
+        "classification": "complex",
+        "expected_difficulty": 4,
+        "success": false,
+        "duration_ms": 2520,
+        "llm_calls": 0,
+        "tokens_estimate": 378,
+        "retries": 0,
+        "quality_score": 7.9,
+        "quality_breakdown": {
+          "files_changed": 3,
+          "lines_within_limit": 2,
+          "tests_pass": 0,
+          "scope_creep": 2,
+          "error_penalty": -1
+        },
+        "files_changed": [
+          "src/cache/LRUCache.ts",
+          "src/db/queryWithCache.ts"
+        ],
+        "tests_pass": false,
+        "scope_creep": false,
+        "errors": [
+          "Unknown execution failure"
+        ]
+      },
+      {
+        "task_id": "COMPLEX-003",
+        "scenario": "A",
+        "description": "Criar sistema de logging estruturado com niveis (debug/info/warn/error) e rotacao de arquivos",
+        "classification": "complex",
+        "expected_difficulty": 4,
+        "success": false,
+        "duration_ms": 2772,
+        "llm_calls": 0,
+        "tokens_estimate": 387,
+        "retries": 0,
+        "quality_score": 3.6,
+        "quality_breakdown": {
+          "files_changed": 3,
+          "lines_within_limit": 0,
+          "tests_pass": 0,
+          "scope_creep": -2,
+          "error_penalty": -1
+        },
+        "files_changed": [
+          "src/logger/index.ts",
+          "src/logger/transports/file.ts",
+          "src/unrelated/extra.ts"
+        ],
+        "tests_pass": false,
+        "scope_creep": true,
+        "errors": [
+          "Unknown execution failure"
+        ]
+      },
+      {
+        "task_id": "COMPLEX-004",
+        "scenario": "A",
+        "description": "Implementar graceful shutdown para o servidor HTTP com timeout de conexoes ativas e cleanup de recursos",
+        "classification": "complex",
+        "expected_difficulty": 5,
+        "success": false,
+        "duration_ms": 4299,
+        "llm_calls": 0,
+        "tokens_estimate": 571,
+        "retries": 0,
+        "quality_score": 5,
+        "quality_breakdown": {
+          "files_changed": 3,
+          "lines_within_limit": 2,
+          "tests_pass": 0,
+          "scope_creep": -2,
+          "error_penalty": -1
+        },
+        "files_changed": [
+          "src/server/shutdown.ts",
+          "src/server/index.ts",
+          "src/unrelated/extra.ts"
+        ],
+        "tests_pass": false,
+        "scope_creep": true,
+        "errors": [
+          "Unknown execution failure"
+        ]
+      }
+    ],
+    "summary": {
+      "total_tasks": 10,
+      "success_count": 1,
+      "fail_count": 9,
+      "success_rate": 0.1,
+      "avg_quality_score": 5.51,
+      "median_quality_score": 5.7,
+      "stddev_quality_score": 1.84,
+      "avg_duration_ms": 2047,
+      "total_duration_ms": 20468,
+      "avg_llm_calls": 0.1,
+      "total_tokens": 2836,
+      "avg_tokens": 284,
+      "total_retries": 0,
+      "scope_creep_count": 6,
+      "scope_creep_rate": 0.6,
+      "test_pass_count": 1,
+      "test_pass_rate": 0.1,
+      "total_errors": 9,
+      "files_changed_total": 23,
+      "quality_by_classification": {
+        "simple": 3.6,
+        "medium": 6.6,
+        "complex": 6.1
+      }
+    }
+  },
+  "scenario_b": {
+    "name": "Com Matrix (Pipeline)",
+    "total_tasks": 10,
+    "success_rate": 1,
+    "avg_quality_score": 9.58,
+    "stddev_quality_score": 0.68,
+    "avg_duration_ms": 3777,
+    "avg_llm_calls": 3.2,
+    "avg_tokens": 2465,
+    "scope_creep_rate": 0,
+    "test_pass_rate": 0.9,
+    "quality_by_classification": {
+      "simple": 10,
+      "medium": 9.1,
+      "complex": 9.7
+    },
+    "results": [
+      {
+        "task_id": "SIMPLE-001",
+        "scenario": "B",
+        "description": "Corrigir typo no README: 'referrence' → 'reference'",
+        "classification": "simple",
+        "expected_difficulty": 1,
+        "success": true,
+        "duration_ms": 1578,
+        "llm_calls": 1,
+        "tokens_estimate": 620,
+        "retries": 0,
+        "quality_score": 10,
+        "quality_breakdown": {
+          "files_changed": 3,
+          "lines_within_limit": 2,
+          "tests_pass": 2,
+          "scope_creep": 2,
+          "error_penalty": 0
+        },
+        "files_changed": [
+          "README.md"
+        ],
+        "tests_pass": true,
+        "scope_creep": false,
+        "errors": []
+      },
+      {
+        "task_id": "SIMPLE-002",
+        "scenario": "B",
+        "description": "Renomear funcao 'calcTotal' para 'calculateTotal' em src/utils/math.ts",
+        "classification": "simple",
+        "expected_difficulty": 1,
+        "success": true,
+        "duration_ms": 1725,
+        "llm_calls": 1,
+        "tokens_estimate": 571,
+        "retries": 0,
+        "quality_score": 10,
+        "quality_breakdown": {
+          "files_changed": 3,
+          "lines_within_limit": 2,
+          "tests_pass": 2,
+          "scope_creep": 2,
+          "error_penalty": 0
+        },
+        "files_changed": [
+          "src/utils/math.ts"
+        ],
+        "tests_pass": true,
+        "scope_creep": false,
+        "errors": []
+      },
+      {
+        "task_id": "SIMPLE-003",
+        "scenario": "B",
+        "description": "Adicionar validacao de campo obrigatorio 'nome' no formulario de cadastro",
+        "classification": "simple",
+        "expected_difficulty": 2,
+        "success": true,
+        "duration_ms": 2835,
+        "llm_calls": 1,
+        "tokens_estimate": 1274,
+        "retries": 0,
+        "quality_score": 10,
+        "quality_breakdown": {
+          "files_changed": 3,
+          "lines_within_limit": 2,
+          "tests_pass": 2,
+          "scope_creep": 2,
+          "error_penalty": 0
+        },
+        "files_changed": [
+          "src/forms/register.tsx"
+        ],
+        "tests_pass": true,
+        "scope_creep": false,
+        "errors": []
+      },
+      {
+        "task_id": "MEDIUM-001",
+        "scenario": "B",
+        "description": "Corrigir bug no calculo de frete: quando CEP e de regiao remota, frete deve ser gratis para compras acima de R$ 200",
+        "classification": "medium",
+        "expected_difficulty": 3,
+        "success": true,
+        "duration_ms": 3056,
+        "llm_calls": 3,
+        "tokens_estimate": 1796,
+        "retries": 1,
+        "quality_score": 8.6,
+        "quality_breakdown": {
+          "files_changed": 3,
+          "lines_within_limit": 0,
+          "tests_pass": 2,
+          "scope_creep": 2,
+          "error_penalty": 0
+        },
+        "files_changed": [
+          "src/services/shipping.ts"
+        ],
+        "tests_pass": true,
+        "scope_creep": false,
+        "errors": []
+      },
+      {
+        "task_id": "MEDIUM-002",
+        "scenario": "B",
+        "description": "Implementar ordenacao por data na listagem de pedidos (mais recentes primeiro)",
+        "classification": "medium",
+        "expected_difficulty": 3,
+        "success": true,
+        "duration_ms": 3543,
+        "llm_calls": 2,
+        "tokens_estimate": 1802,
+        "retries": 1,
+        "quality_score": 8.6,
+        "quality_breakdown": {
+          "files_changed": 3,
+          "lines_within_limit": 0,
+          "tests_pass": 2,
+          "scope_creep": 2,
+          "error_penalty": 0
+        },
+        "files_changed": [
+          "src/components/OrderList.tsx",
+          "src/services/orders.ts"
+        ],
+        "tests_pass": true,
+        "scope_creep": false,
+        "errors": []
+      },
+      {
+        "task_id": "MEDIUM-003",
+        "scenario": "B",
+        "description": "Adicionar campo 'telefone' no formulario de cadastro com validacao de formato (XX) XXXXX-XXXX",
+        "classification": "medium",
+        "expected_difficulty": 3,
+        "success": true,
+        "duration_ms": 3453,
+        "llm_calls": 2,
+        "tokens_estimate": 1726,
+        "retries": 1,
+        "quality_score": 10,
+        "quality_breakdown": {
+          "files_changed": 3,
+          "lines_within_limit": 2,
+          "tests_pass": 2,
+          "scope_creep": 2,
+          "error_penalty": 0
+        },
+        "files_changed": [
+          "src/forms/register.tsx",
+          "src/validators/phone.ts"
+        ],
+        "tests_pass": true,
+        "scope_creep": false,
+        "errors": []
+      },
+      {
+        "task_id": "COMPLEX-001",
+        "scenario": "B",
+        "description": "Refatorar modulo de autenticacao para suportar refresh tokens com renovacao automatica",
+        "classification": "complex",
+        "expected_difficulty": 4,
+        "success": true,
+        "duration_ms": 4302,
+        "llm_calls": 5,
+        "tokens_estimate": 4234,
+        "retries": 2,
+        "quality_score": 8.6,
+        "quality_breakdown": {
+          "files_changed": 3,
+          "lines_within_limit": 2,
+          "tests_pass": 0,
+          "scope_creep": 2,
+          "error_penalty": 0
+        },
+        "files_changed": [
+          "src/auth/AuthProvider.tsx",
+          "src/services/auth.ts",
+          "src/hooks/useAuth.ts"
+        ],
+        "tests_pass": false,
+        "scope_creep": false,
+        "errors": []
+      },
+      {
+        "task_id": "COMPLEX-002",
+        "scenario": "B",
+        "description": "Implementar cache LRU para consultas ao banco de dados com expiracao configuravel",
+        "classification": "complex",
+        "expected_difficulty": 4,
+        "success": true,
+        "duration_ms": 5295,
+        "llm_calls": 5,
+        "tokens_estimate": 3359,
+        "retries": 2,
+        "quality_score": 10,
+        "quality_breakdown": {
+          "files_changed": 3,
+          "lines_within_limit": 2,
+          "tests_pass": 2,
+          "scope_creep": 2,
+          "error_penalty": 0
+        },
+        "files_changed": [
+          "src/cache/LRUCache.ts",
+          "src/db/queryWithCache.ts"
+        ],
+        "tests_pass": true,
+        "scope_creep": false,
+        "errors": []
+      },
+      {
+        "task_id": "COMPLEX-003",
+        "scenario": "B",
+        "description": "Criar sistema de logging estruturado com niveis (debug/info/warn/error) e rotacao de arquivos",
+        "classification": "complex",
+        "expected_difficulty": 4,
+        "success": true,
+        "duration_ms": 4337,
+        "llm_calls": 5,
+        "tokens_estimate": 4179,
+        "retries": 2,
+        "quality_score": 10,
+        "quality_breakdown": {
+          "files_changed": 3,
+          "lines_within_limit": 2,
+          "tests_pass": 2,
+          "scope_creep": 2,
+          "error_penalty": 0
+        },
+        "files_changed": [
+          "src/logger/index.ts",
+          "src/logger/transports/file.ts"
+        ],
+        "tests_pass": true,
+        "scope_creep": false,
+        "errors": []
+      },
+      {
+        "task_id": "COMPLEX-004",
+        "scenario": "B",
+        "description": "Implementar graceful shutdown para o servidor HTTP com timeout de conexoes ativas e cleanup de recursos",
+        "classification": "complex",
+        "expected_difficulty": 5,
+        "success": true,
+        "duration_ms": 7650,
+        "llm_calls": 7,
+        "tokens_estimate": 5090,
+        "retries": 3,
+        "quality_score": 10,
+        "quality_breakdown": {
+          "files_changed": 3,
+          "lines_within_limit": 2,
+          "tests_pass": 2,
+          "scope_creep": 2,
+          "error_penalty": 0
+        },
+        "files_changed": [
+          "src/server/shutdown.ts",
+          "src/server/index.ts"
+        ],
+        "tests_pass": true,
+        "scope_creep": false,
+        "errors": []
+      }
+    ],
+    "summary": {
+      "total_tasks": 10,
+      "success_count": 10,
+      "fail_count": 0,
+      "success_rate": 1,
+      "avg_quality_score": 9.58,
+      "median_quality_score": 10,
+      "stddev_quality_score": 0.68,
+      "avg_duration_ms": 3777,
+      "total_duration_ms": 37774,
+      "avg_llm_calls": 3.2,
+      "total_tokens": 24651,
+      "avg_tokens": 2465,
+      "total_retries": 12,
+      "scope_creep_count": 0,
+      "scope_creep_rate": 0,
+      "test_pass_count": 9,
+      "test_pass_rate": 0.9,
+      "total_errors": 0,
+      "files_changed_total": 17,
+      "quality_by_classification": {
+        "simple": 10,
+        "medium": 9.1,
+        "complex": 9.7
+      }
+    }
+  },
+  "comparison": {
+    "matrix_gain": 4.07,
+    "matrix_gain_percent": 73.9,
+    "success_rate_a": 0.1,
+    "success_rate_b": 1,
+    "success_rate_improvement_percent": 900,
+    "avg_quality_a": 5.51,
+    "avg_quality_b": 9.58,
+    "quality_improvement_percent": 73.9,
+    "stddev_quality_a": 1.84,
+    "stddev_quality_b": 0.68,
+    "consistency_improvement_percent": 63,
+    "scope_creep_rate_a": 0.6,
+    "scope_creep_rate_b": 0,
+    "scope_creep_reduction_percent": 100,
+    "test_pass_rate_a": 0.1,
+    "test_pass_rate_b": 0.9,
+    "avg_duration_a_ms": 2047,
+    "avg_duration_b_ms": 3777,
+    "duration_overhead_percent": 84.5,
+    "avg_llm_calls_a": 0.1,
+    "avg_llm_calls_b": 3.2,
+    "llm_calls_increase_percent": 3100,
+    "efficiency_a": 55.1,
+    "efficiency_b": 2.994,
+    "model_independence_score": 0.9544,
+    "quality_by_classification": {
+      "simple": {
+        "avg_a": 3.6,
+        "avg_b": 10,
+        "delta": 6.4
+      },
+      "medium": {
+        "avg_a": 6.6,
+        "avg_b": 9.1,
+        "delta": 2.5
+      },
+      "complex": {
+        "avg_a": 6.1,
+        "avg_b": 9.7,
+        "delta": 3.6
+      }
+    },
+    "task_comparison": [
+      {
+        "task_id": "SIMPLE-001",
+        "classification": "simple",
+        "difficulty": 1,
+        "quality_score_a": 3.6,
+        "quality_score_b": 10,
+        "delta": 6.4,
+        "success_a": false,
+        "success_b": true,
+        "duration_a_ms": 1091,
+        "duration_b_ms": 1578,
+        "llm_calls_a": 0,
+        "llm_calls_b": 1,
+        "scope_creep_a": true,
+        "scope_creep_b": false
+      },
+      {
+        "task_id": "SIMPLE-002",
+        "classification": "simple",
+        "difficulty": 1,
+        "quality_score_a": 3.6,
+        "quality_score_b": 10,
+        "delta": 6.4,
+        "success_a": false,
+        "success_b": true,
+        "duration_a_ms": 960,
+        "duration_b_ms": 1725,
+        "llm_calls_a": 0,
+        "llm_calls_b": 1,
+        "scope_creep_a": true,
+        "scope_creep_b": false
+      },
+      {
+        "task_id": "SIMPLE-003",
+        "classification": "simple",
+        "difficulty": 2,
+        "quality_score_a": 3.6,
+        "quality_score_b": 10,
+        "delta": 6.4,
+        "success_a": false,
+        "success_b": true,
+        "duration_a_ms": 1492,
+        "duration_b_ms": 2835,
+        "llm_calls_a": 0,
+        "llm_calls_b": 1,
+        "scope_creep_a": true,
+        "scope_creep_b": false
+      },
+      {
+        "task_id": "MEDIUM-001",
+        "classification": "medium",
+        "difficulty": 3,
+        "quality_score_a": 6.4,
+        "quality_score_b": 8.6,
+        "delta": 2.2,
+        "success_a": false,
+        "success_b": true,
+        "duration_a_ms": 1426,
+        "duration_b_ms": 3056,
+        "llm_calls_a": 0,
+        "llm_calls_b": 3,
+        "scope_creep_a": false,
+        "scope_creep_b": false
+      },
+      {
+        "task_id": "MEDIUM-002",
+        "classification": "medium",
+        "difficulty": 3,
+        "quality_score_a": 7.1,
+        "quality_score_b": 8.6,
+        "delta": 1.5,
+        "success_a": true,
+        "success_b": true,
+        "duration_a_ms": 1830,
+        "duration_b_ms": 3543,
+        "llm_calls_a": 1,
+        "llm_calls_b": 2,
+        "scope_creep_a": true,
+        "scope_creep_b": false
+      },
+      {
+        "task_id": "MEDIUM-003",
+        "classification": "medium",
+        "difficulty": 3,
+        "quality_score_a": 6.4,
+        "quality_score_b": 10,
+        "delta": 3.6,
+        "success_a": false,
+        "success_b": true,
+        "duration_a_ms": 1631,
+        "duration_b_ms": 3453,
+        "llm_calls_a": 0,
+        "llm_calls_b": 2,
+        "scope_creep_a": false,
+        "scope_creep_b": false
+      },
+      {
+        "task_id": "COMPLEX-001",
+        "classification": "complex",
+        "difficulty": 4,
+        "quality_score_a": 7.9,
+        "quality_score_b": 8.6,
+        "delta": 0.7,
+        "success_a": false,
+        "success_b": true,
+        "duration_a_ms": 2447,
+        "duration_b_ms": 4302,
+        "llm_calls_a": 0,
+        "llm_calls_b": 5,
+        "scope_creep_a": false,
+        "scope_creep_b": false
+      },
+      {
+        "task_id": "COMPLEX-002",
+        "classification": "complex",
+        "difficulty": 4,
+        "quality_score_a": 7.9,
+        "quality_score_b": 10,
+        "delta": 2.1,
+        "success_a": false,
+        "success_b": true,
+        "duration_a_ms": 2520,
+        "duration_b_ms": 5295,
+        "llm_calls_a": 0,
+        "llm_calls_b": 5,
+        "scope_creep_a": false,
+        "scope_creep_b": false
+      },
+      {
+        "task_id": "COMPLEX-003",
+        "classification": "complex",
+        "difficulty": 4,
+        "quality_score_a": 3.6,
+        "quality_score_b": 10,
+        "delta": 6.4,
+        "success_a": false,
+        "success_b": true,
+        "duration_a_ms": 2772,
+        "duration_b_ms": 4337,
+        "llm_calls_a": 0,
+        "llm_calls_b": 5,
+        "scope_creep_a": true,
+        "scope_creep_b": false
+      },
+      {
+        "task_id": "COMPLEX-004",
+        "classification": "complex",
+        "difficulty": 5,
+        "quality_score_a": 5,
+        "quality_score_b": 10,
+        "delta": 5,
+        "success_a": false,
+        "success_b": true,
+        "duration_a_ms": 4299,
+        "duration_b_ms": 7650,
+        "llm_calls_a": 0,
+        "llm_calls_b": 7,
+        "scope_creep_a": true,
+        "scope_creep_b": false
+      }
+    ]
+  },
+  "recommendations": [
+    "Matrix apresenta ganho significativo de qualidade (73.9%). Recomenda-se uso obrigatório do pipeline para todas as tarefas.",
+    "Taxa de sucesso com Matrix (100%) é significativamente maior que sem Matrix (10%). Isso indica que o pipeline reduz drasticamente falhas de execução.",
+    "Matrix reduz scope creep em 100%. O pipeline mantém o foco da tarefa, evitando modificações não solicitadas.",
+    "A variabilidade de qualidade com Matrix (stddev=0.68) é muito menor que sem Matrix (stddev=1.84). O pipeline torna os resultados previsíveis e consistentes.",
+    "Model Independence Score (MIS) é 0.95 — Alto. A qualidade do pipeline Matrix é praticamente independente do modelo base. Trocar o modelo dificilmente afetará os resultados.",
+    "Eficiência (qualidade por chamada LLM) é menor com Matrix (2.994 vs 55.1). Avaliar se o aumento de qualidade compensa o maior número de chamadas."
+  ]
+}

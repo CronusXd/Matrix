@@ -1,0 +1,27 @@
+{
+  "env": {
+    "node": true,
+    "es2022": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "script"
+  },
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-undef": "error",
+    "no-console": "off",
+    "semi": ["warn", "always"],
+    "quotes": ["warn", "single", { "avoidEscape": true }],
+    "no-var": "warn",
+    "prefer-const": "warn",
+    "eqeqeq": "warn",
+    "no-eval": "error"
+  },
+  "ignorePatterns": [
+    "node_modules/",
+    "**/node_modules/",
+    "pipeline/dashboard.html",
+    "pipeline/snapshots/"
+  ]
+}

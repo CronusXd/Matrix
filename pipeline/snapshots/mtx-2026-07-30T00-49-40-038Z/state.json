@@ -1,0 +1,76 @@
+{
+  "current_state": "fase4_approved",
+  "previous_state": "fase4_review",
+  "last_transition": "fase4_review → fase4_approved",
+  "last_updated": "2026-07-30T00:49:39.779Z",
+  "attempts": {},
+  "history": [
+    {
+      "from": "idle",
+      "to": "identifying",
+      "timestamp": "2026-07-30T00:49:38.506Z"
+    },
+    {
+      "from": "identifying",
+      "to": "obligations_created",
+      "timestamp": "2026-07-30T00:49:38.593Z"
+    },
+    {
+      "from": "obligations_created",
+      "to": "obligations_verified",
+      "timestamp": "2026-07-30T00:49:38.650Z"
+    },
+    {
+      "from": "obligations_verified",
+      "to": "fase1_analysis",
+      "timestamp": "2026-07-30T00:49:38.713Z"
+    },
+    {
+      "from": "fase1_analysis",
+      "to": "todolist_created",
+      "timestamp": "2026-07-30T00:49:38.769Z"
+    },
+    {
+      "from": "todolist_created",
+      "to": "context_building",
+      "timestamp": "2026-07-30T00:49:38.821Z"
+    },
+    {
+      "from": "context_building",
+      "to": "fase2_execution",
+      "timestamp": "2026-07-30T00:49:39.496Z"
+    },
+    {
+      "from": "fase2_execution",
+      "to": "fase2_complete",
+      "timestamp": "2026-07-30T00:49:39.557Z"
+    },
+    {
+      "from": "fase2_complete",
+      "to": "fase3_validation",
+      "timestamp": "2026-07-30T00:49:39.615Z"
+    },
+    {
+      "from": "fase3_validation",
+      "to": "fase3_approved",
+      "timestamp": "2026-07-30T00:49:39.670Z"
+    },
+    {
+      "from": "fase3_approved",
+      "to": "fase4_review",
+      "timestamp": "2026-07-30T00:49:39.726Z"
+    },
+    {
+      "from": "fase4_review",
+      "to": "fase4_approved",
+      "timestamp": "2026-07-30T00:49:39.779Z"
+    }
+  ],
+  "pipeline_version": "1.0",
+  "metadata": {
+    "last_demand": null,
+    "last_especialista": null
+  },
+  "last_snapshot": "auto-context_building-to-fase2_execution-1785372578871",
+  "last_snapshot_time": "2026-07-30T00:49:39.493Z"
+}

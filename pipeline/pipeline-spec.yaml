@@ -1,0 +1,133 @@
+# Matrix Pipeline v1.0 — State Machine Formal Tests
+# 8 test scenarios covering 24 of 26 transitions (92%) across 20 states
+# Used by validate-pipeline.js to verify state machine integrity
+
+tests:
+  # ─── Test 1: Happy Path — Complete Flow ──────────────────────────────
+  - name: "Fluxo completo feliz"
+    description: "Percorre todo o pipeline do início ao fim sem falhas — 15 transições, 16 estados"
+    steps:
+      - from: "idle"
+        trigger: "Demanda do usuário recebida"
+        expect: "identifying"
+      - from: "identifying"
+        trigger: "Auto-identificação concluída"
+        expect: "obligations_created"
+      - from: "obligations_created"
+        trigger: "Todos os itens da todowrite foram completados"
+        expect: "obligations_verified"
+      - from: "obligations_verified"
+        trigger: "Obrigações verificadas com sucesso"
+        expect: "fase1_analysis"
+      - from: "fase1_analysis"
+        trigger: "@fable-method-agent criou todolist (todowrite)"
+        expect: "todolist_created"
+      - from: "todolist_created"
+        trigger: "Todolist válida e pronta para execução"
+        expect: "context_building"
+      - from: "context_building"
+        trigger: "Contexto otimizado montado com sucesso"
+        expect: "fase2_execution"
+      - from: "fase2_execution"
+        trigger: "Especialista concluiu, marcou tasks como completed"
+        expect: "fase2_complete"
+      - from: "fase2_complete"
+        trigger: "Fase 2 concluída com sucesso"
+        expect: "fase3_validation"
+      - from: "fase3_validation"
+        trigger: "Judge retornou VERIFIED ou VERIFIED WITH CAVEATS"
+        expect: "fase3_approved"
+      - from: "fase3_approved"
+        trigger: "Judge aprovou"
+        expect: "fase4_review"
+      - from: "fase4_review"
+        trigger: "Code Review retornou APPROVED"
+        expect: "fase4_approved"
+      - from: "fase4_approved"
+        trigger: "Code Review aprovou"
+        expect: "delivery"
+      - from: "delivery"
+        trigger: "Commit e push concluídos"
+        expect: "reporting"
+      - from: "reporting"
+        trigger: "Relatório entregue ao usuário"
+        expect: "completed"
+
+  # ─── Test 2: Fase 2 Execution Failure ────────────────────────────────
+  - name: "Falha na Fase 2"
+    description: "Especialista falha durante a execução da Fase 2 — transição fase2_execution → failed"
+    steps:
+      - from: "fase2_execution"
+        trigger: "Especialista falhou ou não concluiu"
+        expect: "failed"
+
+  # ─── Test 3: Max Retries → Escalated ─────────────────────────────────
+  - name: "3 tentativas → escalado"
+    description: "Após 3 tentativas sem sucesso no Judge, pipeline escala ao usuário — fase3_refuted → escalated"
+    steps:
+      - from: "fase3_refuted"
+        trigger: "Tentativas >= 3"
+        expect: "escalated"
+
+  # ─── Test 4: Context Builder Failure ──────────────────────────────────
+  - name: "Context Builder → falha"
+    description: "Context Builder falha ao montar contexto otimizado — context_building → failed"
+    steps:
+      - from: "context_building"
+        trigger: "Erro no Context Builder (falha ao descobrir/pontuar arquivos)"
+        expect: "failed"
+
+  # ─── Test 5: Judge Refuted → Retry Fase 2 ────────────────────────────
+  - name: "Judge refutou → retry"
+    description: "Judge retorna REFUTED, pipeline volta para Fase 2 (tentativas < 3) — 2 transições"
+    steps:
+      - from: "fase3_validation"
+        trigger: "Judge retornou REFUTED ou VIOLATION"
+        expect: "fase3_refuted"
+      - from: "fase3_refuted"
+        trigger: "Tentativas < 3"
+        expect: "fase2_execution"
+
+  # ─── Test 6: Code Review Changes Needed → Retry Fase 2 ───────────────
+  - name: "Code Review mudanças → retry"
+    description: "Code Review retorna CHANGES_NEEDED, pipeline volta para Fase 2 (tentativas < 3) — 2 transições"
+    steps:
+      - from: "fase4_review"
+        trigger: "Code Review retornou CHANGES_NEEDED"
+        expect: "fase4_changes_needed"
+      - from: "fase4_changes_needed"
+        trigger: "Tentativas < 3"
+        expect: "fase2_execution"
+
+  # ─── Test 7: Failed → Reset ──────────────────────────────────────────
+  - name: "Failed → reset"
+    description: "Pipeline em estado failed pode ser reiniciado para idle — failed → idle"
+    steps:
+      - from: "failed"
+        trigger: "Reset manual do pipeline"
+        expect: "idle"
+
+  # ─── Test 8: Escalated → Reset ───────────────────────────────────────
+  - name: "Escalated → reset"
+    description: "Pipeline em estado escalated pode ser reiniciado para idle — escalated → idle"
+    steps:
+      - from: "escalated"
+        trigger: "Reset manual do pipeline"
+        expect: "idle"
+
+  # ─── Test 9: Fluxo paralelo feliz ──────────────────────────────────────
+  - name: "Fluxo paralelo feliz"
+    description: "Percorre o pipeline com parallel.enabled=true — 4 novos estados, 4 transições"
+    steps:
+      - from: "context_building"
+        trigger: "Contexto otimizado montado com sucesso (modo paralelo)"
+        expect: "parallel_dispatch"
+      - from: "parallel_dispatch"
+        trigger: "Dispatch concluido: tasks roteadas e contextos prontos"
+        expect: "parallel_execution"
+      - from: "parallel_execution"
+        trigger: "Pool paralelo concluiu execucao"
+        expect: "parallel_merge"
+      - from: "parallel_merge"
+        trigger: "Merge concluido com sucesso (com ou sem conflitos menores)"
+        expect: "fase2_complete"

@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "lib": ["ES2022"],
+    "types": ["node"],
+    "allowJs": true,
+    "checkJs": true,
+    "strict": false,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "maxNodeModuleJsDepth": 0
+  },
+  "include": [
+    "pipeline/scripts/pipeline-executor.js",
+    "pipeline/scripts/model-router.js",
+    "pipeline/scripts/memory-adapter.js",
+    "pipeline/scripts/types/*.d.ts",
+    "pipeline/scripts/agent-router.js",
+    "pipeline/scripts/tool-router.js",
+    "pipeline/scripts/token-tracker.js",
+    "pipeline/scripts/context-executor.js",
+    "pipeline/scripts/observability.js",
+    "pipeline/scripts/security-enforcer.js",
+    "pipeline/scripts/rollback-manager.js",
+    "pipeline/scripts/pr-generator.js",
+    "pipeline/scripts/self-healing.js",
+    "pipeline/scripts/parallel-executor.js",
+    "pipeline/scripts/task-decomposer.js",
+    "pipeline/scripts/model-voting.js",
+    "pipeline/scripts/code-search.js",
+    "pipeline/scripts/load-test.js",
+    "pipeline/scripts/ai-governance.js",
+    "pipeline/scripts/browser-support.js",
+    "pipeline/scripts/docker-support.js",
+    "pipeline/scripts/session-manager.js",
+    "pipeline/scripts/tenant-router.js",
+    "pipeline/scripts/release-integration.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "projeto"
+  ]
+}

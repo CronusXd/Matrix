@@ -1,0 +1,47 @@
+{
+  "pipeline_version": "1.0",
+  "observability_version": "1.0",
+  "tenant": "projeto-alpha",
+  "total_demandas": 1,
+  "states_completed": 1,
+  "states_failed": 0,
+  "total_eventos": 1,
+  "total_duration_ms": 5727,
+  "events_count": 7,
+  "escalations": 0,
+  "agents_by_type": {
+    "AgentsOrchestrator": 1,
+    "fable-method-agent": 1
+  },
+  "tools_by_type": {
+    "state_machine": 6,
+    "todowrite": 2,
+    "read": 4,
+    "task": 1,
+    "write": 2
+  },
+  "failures_by_phase": {},
+  "created_at": "2026-07-26T21:01:46.559Z",
+  "retries": {
+    "fase3_validation": 0,
+    "fase4_review": 0
+  },
+  "token_usage_real": {
+    "gpt-4o": {
+      "input_tokens": 1718,
+      "output_tokens": 687,
+      "total_tokens": 2405,
+      "input_cost": 0.00859,
+      "output_cost": 0.010305,
+      "total_cost": 0.018895,
+      "calls": 1
+    }
+  },
+  "token_usage": {
+    "gpt-4o": {
+      "tokens": 2405,
+      "cost": 0.018895,
+      "calls": 1
+    }
+  }
+}

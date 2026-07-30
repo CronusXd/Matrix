@@ -1,0 +1,27 @@
+# Matrix Release Config — Template
+# Copie este arquivo para a raiz do seu projeto e personalize.
+# O orchestrator lê este arquivo durante o release pipeline.
+
+release:
+  # Arquivo de versão (caminho relativo ao projeto)
+  version_file: "pipeline/config/version.json"
+
+  # Arquivo de changelog
+  changelog_file: "CHANGELOG.md"
+
+  # Prefixo da tag git
+  tag_prefix: "v"
+
+  # Incremento automático: "patch" | "minor" | "major"
+  auto_increment: "patch"
+
+  # Hooks executados antes do build
+  pre_release_hooks:
+    - "npm run test"
+    - "npm run lint"
+
+  # Hooks executados após o deploy
+  post_release_hooks: []
+
+  # Máximo de tentativas por fase
+  max_retries: 3

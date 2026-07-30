@@ -1,0 +1,10 @@
+6574afd feat(pipeline): implementação concluída e aprovada
+8d58084 feat(pipeline): implementação concluída e aprovada
+362d2b5 feat(pipeline): implementação concluída e aprovada
+73f75c7 feat(pipeline): implementação concluída e aprovada
+599dc3f perf: Unificar state machines + simplificar agent-router + remover dashboard
+b6d2563 perf: Matrix Audit Arquitetural - remocao de 69 scripts dead + simplificacao massiva
+4e71120 feat: R14 - Paralelismo OBRIGATORIO para 2+ tarefas
+6d0981f feat: Fases C e D - Integracao + Testes de Paralelismo
+f88f728 feat: Fase B - State Machine Paralela (+3 estados, +6 transicoes)
+3f665d5 feat: Fase A - Parallel Engine (parallel-dispatcher, parallel-executor, parallel-merger)

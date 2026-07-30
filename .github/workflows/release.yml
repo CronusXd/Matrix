@@ -1,0 +1,178 @@
+# Matrix Release Pipeline v1.0
+# Integração contínua do pipeline de release.
+# Acionado manualmente via workflow_dispatch com opção de incremento.
+#
+# Regras:
+#   - NON-BLOCKING: cada step é independente; falha em um não quebra os demais
+#   - Segurança: usa GITHUB_TOKEN para operações no repositório
+#   - Versão: lê de pipeline/config/version.json se existir
+#
+# Uso:
+#   1. Vá para Actions > Matrix Release > "Run workflow"
+#   2. Escolha o incremento: patch, minor, ou major
+#   3. Confirme a execução
+
+name: Matrix Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      increment:
+        type: choice
+        description: 'Incremento de versão'
+        options:
+          - patch
+          - minor
+          - major
+        default: 'patch'
+
+env:
+  NODE_VERSION: '22'
+  RELEASE_BRANCH: 'main'
+
+jobs:
+  # ─── JOB: RELEASE ──────────────────────────────────────────────────
+  release:
+    name: 'Release ${{ github.event.inputs.increment }}'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+
+    steps:
+      # ─── Step 1: Checkout ──────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ env.RELEASE_BRANCH }}
+
+      # ─── Step 2: Setup Node.js ─────────────────────────────────────
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      # ─── Step 3: Versionamento ─────────────────────────────────────
+      - name: Bump version
+        id: version
+        run: |
+          INCREMENT="${{ github.event.inputs.increment }}"
+          echo "Incremento: $INCREMENT"
+
+          # Tenta ler versão atual de version.json no pipeline
+          VERSION_FILE="pipeline/config/version.json"
+          CURRENT_VERSION="0.0.0"
+
+          if [ -f "$VERSION_FILE" ]; then
+            CURRENT_VERSION=$(node -e "console.log(require('./$VERSION_FILE').version || '0.0.0')")
+            echo "Versão atual: $CURRENT_VERSION (de $VERSION_FILE)"
+          else
+            # Fallback: última tag git
+            LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+            CURRENT_VERSION="${LATEST_TAG#v}"
+            echo "Versão atual: $CURRENT_VERSION (da última tag)"
+          fi
+
+          # Calcula nova versão com node
+          NEW_VERSION=$(node -e "
+            const [maj, min, pat] = '$CURRENT_VERSION'.split('.').map(Number);
+            let [nm, nmin, npat] = [maj, min, pat];
+            if ('$INCREMENT' === 'major') { nm++; nmin = 0; npat = 0; }
+            else if ('$INCREMENT' === 'minor') { nmin++; npat = 0; }
+            else { npat++; }
+            console.log(nm + '.' + nmin + '.' + npat);
+          ")
+
+          echo "Nova versão: v$NEW_VERSION"
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      # ─── Step 4: Build (NON-BLOCKING) ──────────────────────────────
+      - name: Build project (NON-BLOCKING)
+        id: build
+        continue-on-error: true
+        run: |
+          echo "Build para release v${{ steps.version.outputs.version }}"
+
+          # Se existir package.json, instala dependências e builda
+          if [ -f "package.json" ]; then
+            npm ci --ignore-scripts 2>/dev/null || npm install --ignore-scripts 2>/dev/null || true
+            if grep -q '"build"' package.json 2>/dev/null; then
+              npm run build 2>/dev/null || echo "⚠️ Build falhou (NON-BLOCKING)"
+            fi
+          fi
+
+          echo "Build concluído"
+
+      # ─── Step 5: Changelog (simplificado) ──────────────────────────
+      - name: Generate changelog
+        id: changelog
+        run: |
+          echo "## Matrix Release v${{ steps.version.outputs.version }}" > release-notes.md
+          echo "" >> release-notes.md
+          echo "### O que mudou" >> release-notes.md
+          echo "" >> release-notes.md
+
+          # Gera changelog dos últimos commits desde a última tag
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -n "$LATEST_TAG" ]; then
+            git log "$LATEST_TAG..HEAD" --oneline --no-decorate 2>/dev/null | while read line; do
+              echo "- $line" >> release-notes.md
+            done
+          else
+            echo "- Release inicial" >> release-notes.md
+          fi
+
+          echo "" >> release-notes.md
+          echo "### Detalhes" >> release-notes.md
+          echo "" >> release-notes.md
+          echo "- **Versão:** v${{ steps.version.outputs.version }}" >> release-notes.md
+          echo "- **Incremento:** ${{ github.event.inputs.increment }}" >> release-notes.md
+          echo "- **Data:** $(date -u +%Y-%m-%d)" >> release-notes.md
+
+          echo "Changelog gerado em release-notes.md"
+          cat release-notes.md
+
+      # ─── Step 6: Git Tag ───────────────────────────────────────────
+      - name: Create Git tag
+        run: |
+          git config user.name "Matrix Release Bot"
+          git config user.email "release@matrix.pipeline"
+
+          # Cria tag anotada
+          git tag -a "v${{ steps.version.outputs.version }}" -m "Release v${{ steps.version.outputs.version }}"
+          git push origin "v${{ steps.version.outputs.version }}"
+          echo "Tag v${{ steps.version.outputs.version }} criada e enviada"
+
+      # ─── Step 7: GitHub Release ────────────────────────────────────
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: 'v${{ steps.version.outputs.version }}'
+          name: 'Matrix v${{ steps.version.outputs.version }}'
+          body_path: release-notes.md
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # ─── Step 8: Validar state machine ────────────────────────────
+      - name: Validar state machine
+        run: node pipeline/scripts/validate-pipeline.js
+      - name: Executar testes
+        run: node pipeline/tests/run-all-wrapper.js
+
+      # ─── Step 9: Summary ───────────────────────────────────────────
+      - name: Release summary
+        run: |
+          echo "## ✅ Matrix Release v${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Campo | Valor |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| Versão | v${{ steps.version.outputs.version }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Incremento | ${{ github.event.inputs.increment }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build | ${{ steps.build.outcome }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Tag | v${{ steps.version.outputs.version }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Release criada com sucesso!" >> $GITHUB_STEP_SUMMARY

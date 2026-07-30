@@ -1,0 +1,125 @@
+# Matrix Context Builder v1.0 — Otimização de Contexto para Especialistas
+# Executado pelo @AgentsOrchestrator ANTES de delegar tarefa ao especialista.
+# Descobre arquivos relevantes, elimina irrelevantes, ordena por importância.
+
+context_builder:
+  version: "1.0"
+  description: "Monta contexto otimizado para o especialista baseado na demanda"
+
+  # ─── DESCOBERTA ─────────────────────────────────────────────────────
+  discovery:
+    # Padrões de arquivos relevantes por tipo de projeto
+    file_patterns:
+      - "**/*.py"
+      - "**/*.js"
+      - "**/*.ts"
+      - "**/*.jsx"
+      - "**/*.tsx"
+      - "**/*.php"
+      - "**/*.css"
+      - "**/*.html"
+      - "**/*.json"
+      - "**/*.yaml"
+      - "**/*.yml"
+      - "**/*.sql"
+      - "**/*.md"
+
+    # Padrões de documentação
+    doc_patterns:
+      - "README*"
+      - "**/docs/**"
+      - "**/*.md"
+      - "**/CHANGELOG*"
+      - "**/CONTRIBUTING*"
+
+    # Padrões a excluir
+    exclude_patterns:
+      - "node_modules/**"
+      - ".git/**"
+      - "__pycache__/**"
+      - "*.pyc"
+      - "*.log"
+      - ".env*"
+      - "dist/**"
+      - "build/**"
+      - ".venv/**"
+      - "vendor/**"
+
+  # ─── PONTUAÇÃO DE RELEVÂNCIA ───────────────────────────────────────
+  scoring:
+    description: "Cada arquivo recebe pontos que determinam sua ordem na entrega"
+    rules:
+      - name: "keyword_match"
+        description: "Arquivo contém palavras-chave da demanda"
+        points: 10
+        method: "grep pela(s) palavra(s)-chave no conteúdo"
+
+      - name: "file_name_match"
+        description: "Nome do arquivo corresponde a termo da demanda"
+        points: 8
+        method: "comparar nome do arquivo com termos-chave"
+
+      - name: "recently_modified"
+        description: "Arquivo modificado recentemente"
+        points: 5
+        method: "git diff --name-only HEAD~5 (se git disponível)"
+
+      - name: "doc_match"
+        description: "Arquivo de documentação relevante"
+        points: 4
+        method: "README/doc que menciona termos da demanda"
+
+      - name: "dependency"
+        description: "Arquivo importado/dependência dos arquivos relevantes"
+        points: 3
+        method: "rastrear imports/includes dos arquivos encontrados"
+
+  # ─── LIMITES ────────────────────────────────────────────────────────
+  limits:
+    max_files: 15                    # Máximo de arquivos no contexto final
+    max_context_lines: 500            # Máximo de linhas totais no contexto
+    min_score: 3                      # Abaixo disso, arquivo é eliminado
+    max_search_depth: 2               # Profundidade máxima de dependências
+    compression_strategy: "smart"      # Estratégia padrão: smart | section_extract | keyword_lines | truncate
+    compression_max_lines: 200         # Máximo de linhas por arquivo após compressão semântica
+
+  # ─── CACHE ────────────────────────────────────────────────────────
+  cache:
+    enabled: true
+    ttl_seconds: 60
+    storage_type: "file"
+    file: "context-cache.json"
+    key_format: "cb:{project_hash}:{keywords_sorted}"
+    description: >
+      Cache TTL da descoberta. Antes de executar CB.1, verifica se há
+      cache válido (idade < ttl_seconds). Cache invalidado se arquivos
+      do projeto forem modificados (mtime check). NON-BLOCKING: falha
+      no cache não interrompe o Context Builder.
+
+
+
+  # ─── FORMATO DE ENTREGA ─────────────────────────────────────────────
+  output:
+    format: "estruturado"
+    template: |
+      ## 📋 Contexto Otimizado para @[especialista]
+
+      ### Demanda
+      [descrição da demanda]
+
+      ### Arquivos Relevantes (ordenados por importância)
+      1. [path] — [motivo da relevância]
+      2. [path] — [motivo da relevância]
+      ...
+
+      ### Estrutura do Projeto
+      [estrutura_do_projeto]
+
+      ### Documentação Relacionada
+      - [path da doc] — [trecho relevante]
+
+      ### Dependências Identificadas
+      - [path] → importa [outro path]
+
+      ### Excluídos (irrelevantes)
+      - [path] — [motivo da exclusão]

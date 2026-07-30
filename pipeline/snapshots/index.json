@@ -1,0 +1,102 @@
+[
+  {
+    "id": "mtx-2026-07-30T00-44-36-690Z",
+    "label": "auto-context_building-to-fase2_execution-1785372276411",
+    "timestamp": "2026-07-30T00:44:36.690Z",
+    "branch": "master",
+    "commit": "599dc3fb5a99971cc6a0a98fd478f42bb8ba3410",
+    "backupBranch": "matrix-rollback-mtx-2026-07-30T00-44-36-690Z",
+    "dir": "D:\\OpenCode\\pipeline\\snapshots\\hlrn-2026-07-30T00-44-36-690Z",
+    "status": "active"
+  },
+  {
+    "id": "mtx-2026-07-30T00-44-37-947Z",
+    "label": "auto-fase4_approved-to-delivery-1785372277698",
+    "timestamp": "2026-07-30T00:44:37.947Z",
+    "branch": "master",
+    "commit": "599dc3fb5a99971cc6a0a98fd478f42bb8ba3410",
+    "backupBranch": "matrix-rollback-mtx-2026-07-30T00-44-37-947Z",
+    "dir": "D:\\OpenCode\\pipeline\\snapshots\\hlrn-2026-07-30T00-44-37-947Z",
+    "status": "active"
+  },
+  {
+    "id": "mtx-2026-07-30T00-49-39-122Z",
+    "label": "auto-context_building-to-fase2_execution-1785372578871",
+    "timestamp": "2026-07-30T00:49:39.122Z",
+    "branch": "master",
+    "commit": "73f75c7fdd041ab66f7cc2664c2ed000b55eb812",
+    "backupBranch": "matrix-rollback-mtx-2026-07-30T00-49-39-122Z",
+    "dir": "D:\\OpenCode\\pipeline\\snapshots\\hlrn-2026-07-30T00-49-39-122Z",
+    "status": "active"
+  },
+  {
+    "id": "mtx-2026-07-30T00-49-40-038Z",
+    "label": "auto-fase4_approved-to-delivery-1785372579832",
+    "timestamp": "2026-07-30T00:49:40.038Z",
+    "branch": "master",
+    "commit": "73f75c7fdd041ab66f7cc2664c2ed000b55eb812",
+    "backupBranch": "matrix-rollback-mtx-2026-07-30T00-49-40-038Z",
+    "dir": "D:\\OpenCode\\pipeline\\snapshots\\hlrn-2026-07-30T00-49-40-038Z",
+    "status": "active"
+  },
+  {
+    "id": "mtx-2026-07-30T00-50-53-326Z",
+    "label": "auto-context_building-to-fase2_execution-1785372653066",
+    "timestamp": "2026-07-30T00:50:53.326Z",
+    "branch": "master",
+    "commit": "362d2b5879768ad0d9b4d3059b69fdfc0c80dcc5",
+    "backupBranch": "matrix-rollback-mtx-2026-07-30T00-50-53-326Z",
+    "dir": "D:\\OpenCode\\pipeline\\snapshots\\hlrn-2026-07-30T00-50-53-326Z",
+    "status": "active"
+  },
+  {
+    "id": "mtx-2026-07-30T00-50-54-250Z",
+    "label": "auto-fase4_approved-to-delivery-1785372654040",
+    "timestamp": "2026-07-30T00:50:54.250Z",
+    "branch": "master",
+    "commit": "362d2b5879768ad0d9b4d3059b69fdfc0c80dcc5",
+    "backupBranch": "matrix-rollback-mtx-2026-07-30T00-50-54-250Z",
+    "dir": "D:\\OpenCode\\pipeline\\snapshots\\hlrn-2026-07-30T00-50-54-250Z",
+    "status": "active"
+  },
+  {
+    "id": "mtx-2026-07-30T00-51-31-102Z",
+    "label": "auto-context_building-to-fase2_execution-1785372690854",
+    "timestamp": "2026-07-30T00:51:31.102Z",
+    "branch": "master",
+    "commit": "8d580846483b6b4e64dd65511e78a439fb3b4a82",
+    "backupBranch": "matrix-rollback-mtx-2026-07-30T00-51-31-102Z",
+    "dir": "D:\\OpenCode\\pipeline\\snapshots\\hlrn-2026-07-30T00-51-31-102Z",
+    "status": "active"
+  },
+  {
+    "id": "mtx-2026-07-30T00-51-32-200Z",
+    "label": "auto-fase4_approved-to-delivery-1785372691974",
+    "timestamp": "2026-07-30T00:51:32.200Z",
+    "branch": "master",
+    "commit": "8d580846483b6b4e64dd65511e78a439fb3b4a82",
+    "backupBranch": "matrix-rollback-mtx-2026-07-30T00-51-32-200Z",
+    "dir": "D:\\OpenCode\\pipeline\\snapshots\\hlrn-2026-07-30T00-51-32-200Z",
+    "status": "active"
+  },
+  {
+    "id": "mtx-2026-07-30T00-53-24-796Z",
+    "label": "auto-context_building-to-fase2_execution-1785372804519",
+    "timestamp": "2026-07-30T00:53:24.796Z",
+    "branch": "master",
+    "commit": "6574afd6d110f4a067313e0e08d1efc7206fc26f",
+    "backupBranch": "matrix-rollback-mtx-2026-07-30T00-53-24-796Z",
+    "dir": "D:\\OpenCode\\pipeline\\snapshots\\hlrn-2026-07-30T00-53-24-796Z",
+    "status": "active"
+  },
+  {
+    "id": "mtx-2026-07-30T00-53-25-960Z",
+    "label": "auto-fase4_approved-to-delivery-1785372805674",
+    "timestamp": "2026-07-30T00:53:25.960Z",
+    "branch": "master",
+    "commit": "6574afd6d110f4a067313e0e08d1efc7206fc26f",
+    "backupBranch": "matrix-rollback-mtx-2026-07-30T00-53-25-960Z",
+    "dir": "D:\\OpenCode\\pipeline\\snapshots\\hlrn-2026-07-30T00-53-25-960Z",
+    "status": "active"
+  }
+]
