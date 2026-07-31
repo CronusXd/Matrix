@@ -15,6 +15,7 @@
 
 'use strict';
 
+const path = require('path');
 const logger = require('./utils/logger');
 
 // ── Feature Flag ──────────────────────────────────────────────────────────────
@@ -120,7 +121,27 @@ async function amplify(messages, options) {
 
     if (strategyDef.requiresContext !== false) {
       try {
-        const rootDir = options.projectRoot || process.cwd();
+        // P4.1: Validate and sanitize projectRoot — only allow within current working dir
+        let rootDir = options.projectRoot || process.cwd();
+        const resolved = path.resolve(rootDir);
+        const allowedBase = path.resolve(process.cwd());
+
+        // Append separator to prevent sibling directory bypass (Matrix2 matching Matrix)
+        // Normalize to lowercase for case-insensitive comparison on Windows
+        const normalizedResolved = resolved.toLowerCase() + path.sep;
+        const normalizedBase = allowedBase.toLowerCase() + path.sep;
+
+        if (!normalizedResolved.startsWith(normalizedBase)) {
+          logger.warn({
+            msg: 'projectRoot outside allowed base — using cwd',
+            resolved,
+            allowedBase
+          });
+          rootDir = process.cwd();
+        } else {
+          rootDir = resolved;
+        }
+
         const keywords = extractKeywordsFromTask(task);
 
         logger.debug({
@@ -355,12 +376,39 @@ function buildAmplifiedResponse(
       validationScore: evaluation ? evaluation.score : null,
       validationVerdict: evaluation ? evaluation.verdict : null,
       refinementIterations,
+      amplificationMetrics: {
+        modelBaselineEstimate: profile.coding,
+        strategyBoost: getStrategyBoost(strategy.name),
+        estimatedAmplification: Math.min(1.0, profile.coding + getStrategyBoost(strategy.name))
+      },
       timestamp: new Date().toISOString()
     }
   };
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
+
+/**
+ * Retorna o boost de amplificação estimado para uma estratégia.
+ *
+ * Boost values (aditive over model baseline):
+ *   - minimal:  +0.05
+ *   - standard: +0.12
+ *   - deep:     +0.20
+ *   - extreme:  +0.30
+ *
+ * @param {string} strategyName
+ * @returns {number} 0.0–0.30
+ */
+function getStrategyBoost(strategyName) {
+  const boosts = {
+    minimal: 0.05,
+    standard: 0.12,
+    deep: 0.20,
+    extreme: 0.30
+  };
+  return boosts[strategyName] || 0;
+}
 
 /**
  * Extrai keywords de um objeto TaskAnalysis para busca de contexto.

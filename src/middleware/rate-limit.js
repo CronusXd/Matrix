@@ -1,9 +1,23 @@
+'use strict';
+
 /**
  * Rate Limiting Middleware
  *
  * Limits the number of requests per time window per API key.
  * Uses Fastify's built-in rate limiting when available,
  * or falls back to a simple in-memory implementation.
+ *
+ * NOTE: This is an in-memory rate limiter.
+ *
+ * Limitations:
+ * - Does NOT survive server restarts
+ * - Does NOT scale across multiple instances
+ * - Suitable for single-instance development/production with low traffic
+ *
+ * For multi-instance production, replace with a Redis-backed store:
+ *   - Set up Redis client
+ *   - Use INCR + EXPIRE for per-key counting
+ *   - Replace the Map with Redis operations
  */
 
 const config = require('../config');
