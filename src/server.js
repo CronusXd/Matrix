@@ -79,14 +79,8 @@ function buildServer() {
     return reply.type('text/html').send(html);
   });
 
-  // ── Dashboard Route (auth via header or ?key= param) ──
+  // ── Dashboard Route (auth handled by client-side JS) ──
   server.get('/dashboard', async (request, reply) => {
-    // Support API key via query param: /dashboard?key=mx_...
-    if (request.query.key) {
-      request.headers.authorization = `Bearer ${request.query.key}`;
-    }
-    await authMiddleware(request, reply);
-    if (reply.sent) return;
     const htmlPath = path.join(__dirname, '..', 'dashboard', 'index.html');
     const html = fs.readFileSync(htmlPath, 'utf-8');
     return reply.type('text/html').send(html);
@@ -109,10 +103,10 @@ function buildServer() {
   });
 
   // ── Protected routes ──────────────────────────────────
-  // All /v1/* routes require authentication and rate limiting
+  // All /v1/* and /api/* routes require authentication and rate limiting
   server.addHook('preHandler', async (request, reply) => {
-    // Skip auth for health check and non-API routes
-    if (!request.url.startsWith('/v1/')) return;
+    // Only protect API routes
+    if (!request.url.startsWith('/v1/') && !request.url.startsWith('/api/')) return;
 
     // Rate limit check
     await rateLimitMiddleware(request, reply);
