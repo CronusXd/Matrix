@@ -28,11 +28,11 @@ function normalize(request, userContext, userConfig) {
     /** Authenticated user ID from API key validation */
     userId: userContext.userId,
 
-    /** The user's configured provider (can be overridden per request) */
-    provider: request.provider || userConfig.provider || 'deepseek',
+    /** The user's configured provider — always takes priority over request hints */
+    provider: userConfig.provider || request.provider || 'deepseek',
 
-    /** The model to use (request override > user config > provider default) */
-    model: request.model || userConfig.model || 'deepseek-chat',
+    /** The model to use (user config > request override > provider default) */
+    model: mapModelName(request.model, userConfig.provider || request.provider || 'deepseek') || userConfig.model || 'deepseek-chat',
 
     /** Chat messages in OpenAI format */
     messages: normalizeMessages(request.messages || []),
@@ -102,4 +102,79 @@ function normalizeMessages(messages) {
   });
 }
 
-module.exports = { normalize };
+/**
+ * Map OpenCode model names to the actual provider model names.
+ * OpenCode uses prefixed names like oc/deepseek-v4-flash-free,
+ * but providers expect their native model IDs.
+ *
+ * @param {string} requestModel - Model name from the request
+ * @param {string} provider - Target provider (deepseek, openai, anthropic, openrouter)
+ * @returns {string} Mapped model name for the provider
+ */
+function mapModelName(requestModel, provider) {
+  if (!requestModel || typeof requestModel !== 'string') return requestModel;
+
+  const model = requestModel.toLowerCase();
+  
+  // If model already matches provider's native format, return as-is
+  // (e.g., "deepseek-chat", "gpt-4o", "claude-sonnet-4-20250514")
+  if (!model.includes('/')) return requestModel;
+
+  // ── OpenCode-prefixed models ──────────────────────────────────
+  // oc/ = OpenCode (DeepSeek models proxied through OpenCode)
+  // ag/ = Anthropic/Google
+  // gc/ = Google Cloud
+  
+  const mappings = {
+    // DeepSeek models
+    'oc/deepseek-v4-flash-free': { deepseek: 'deepseek-chat', openrouter: 'deepseek/deepseek-chat' },
+    'oc/deepseek-v4-pro': { deepseek: 'deepseek-chat', openrouter: 'deepseek/deepseek-chat' },
+    
+    // Claude models
+    'ag/claude-sonnet-4-6': { anthropic: 'claude-sonnet-4-20250514' },
+    'kr/claude-sonnet-4.5-thinking-agentic': { anthropic: 'claude-sonnet-4-20250514' },
+    'ag/claude-opus-4-20250514': { anthropic: 'claude-opus-4-20250514' },
+    
+    // Gemini models
+    'gc/gemini-2.5-flash': { openrouter: 'google/gemini-2.5-flash' },
+    
+    // OpenAI models
+    'oc/gpt-4o': { openai: 'gpt-4o' },
+    'oc/gpt-4o-mini': { openai: 'gpt-4o-mini' }
+  };
+
+  // Exact match
+  if (mappings[requestModel] && mappings[requestModel][provider]) {
+    return mappings[requestModel][provider];
+  }
+
+  // Case-insensitive exact match
+  const lowerMappings = {};
+  for (const [key, map] of Object.entries(mappings)) {
+    lowerMappings[key.toLowerCase()] = map;
+  }
+  if (lowerMappings[model] && lowerMappings[model][provider]) {
+    return lowerMappings[model][provider];
+  }
+
+  // Partial match: try to find a mapping for the model part
+  for (const [key, map] of Object.entries(mappings)) {
+    const modelPart = key.split('/')[1];
+    if (modelPart && model.includes(modelPart)) {
+      if (map[provider]) return map[provider];
+    }
+  }
+
+  // Fallback: if the model has a prefix like oc/, strip it and use the rest
+  const slashIdx = requestModel.indexOf('/');
+  if (slashIdx > 0 && slashIdx < 10) {
+    const bareModel = requestModel.substring(slashIdx + 1);
+    // If the bare name looks like a valid model name, use it
+    if (bareModel.length > 3) return bareModel;
+  }
+
+  // Last resort: return original model name
+  return requestModel;
+}
+
+module.exports = { normalize, mapModelName };

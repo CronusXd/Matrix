@@ -43,6 +43,7 @@ const DEFAULT_PROFILE = {
   strengths: [],
   weaknesses: [],
   verified: false,
+  calibrationStatus: 'uncalibrated',
   description: 'Default conservative profile. Not based on benchmarks.',
   lastUpdated: null
 };
@@ -82,6 +83,7 @@ const KNOWN_PROFILES = {
     strengths: ['fast responses', 'low cost', 'basic code generation'],
     weaknesses: ['complex reasoning', 'multi-step planning', 'error recovery', 'detailed instructions'],
     verified: false,
+    calibrationStatus: 'uncalibrated',
     description: 'DeepSeek V4 Flash — free tier model. Good for simple tasks, struggles with complexity.',
     lastUpdated: '2025-01-01'
   },
@@ -103,6 +105,7 @@ const KNOWN_PROFILES = {
     strengths: ['complex reasoning', 'code generation', 'planning', 'structured output'],
     weaknesses: [],
     verified: false,
+    calibrationStatus: 'uncalibrated',
     description: 'DeepSeek V4 Pro — premium tier. Strong across all dimensions.',
     lastUpdated: '2025-01-01'
   },
@@ -124,6 +127,7 @@ const KNOWN_PROFILES = {
     strengths: ['large context window', 'structured output', 'balanced performance'],
     weaknesses: ['edge case handling', 'complex debugging'],
     verified: false,
+    calibrationStatus: 'uncalibrated',
     description: 'Gemini 2.5 Flash — balanced performance. Excellent context window.',
     lastUpdated: '2025-01-01'
   },
@@ -145,6 +149,7 @@ const KNOWN_PROFILES = {
     strengths: ['complex reasoning', 'code quality', 'instruction following', 'consistency'],
     weaknesses: [],
     verified: false,
+    calibrationStatus: 'uncalibrated',
     description: 'Claude Sonnet 4-6 — premium quality. Top-tier across all dimensions.',
     lastUpdated: '2025-01-01'
   },
@@ -166,6 +171,7 @@ const KNOWN_PROFILES = {
     strengths: ['maximum reasoning', 'code generation', 'architecture design', 'complex debugging', 'structured thinking'],
     weaknesses: [],
     verified: false,
+    calibrationStatus: 'uncalibrated',
     description: 'Claude Sonnet 4.5 Thinking — maximum capability. Best for extreme-complexity tasks.',
     lastUpdated: '2025-01-01'
   }
@@ -225,6 +231,76 @@ function getProfile(model) {
 function isVerified(model) {
   const profile = getProfile(model);
   return profile.verified === true;
+}
+
+/**
+ * Verify a model profile against real benchmark results.
+ *
+ * Updates scores with measured data, marks the profile as verified,
+ * and updates lastUpdated timestamp.
+ *
+ * @param {string} model - Model identifier
+ * @param {Object} benchmarkResults - Real benchmark data
+ * @param {Object} benchmarkResults.scores - Measured capability scores { coding, reasoning, ... }
+ * @param {string[]} [benchmarkResults.strengths] - Observed strengths
+ * @param {string[]} [benchmarkResults.weaknesses] - Observed weaknesses
+ * @param {string} [benchmarkResults.description] - Updated description
+ * @returns {{ verified: boolean, lastUpdated: string, scores: Object }}
+ */
+function verifyProfile(model, benchmarkResults) {
+  if (!model || !benchmarkResults || !benchmarkResults.scores) {
+    return { verified: false, lastUpdated: null, scores: {}, error: 'Invalid input: model and benchmarkResults.scores required' };
+  }
+
+  const scores = benchmarkResults.scores;
+  const baseProfile = getProfile(model);
+
+  // Validate score ranges (0–1)
+  const validatedScores = {};
+  for (const [key, value] of Object.entries(scores)) {
+    if (typeof value === 'number' && value >= 0 && value <= 1) {
+      validatedScores[key] = value;
+    }
+  }
+
+  const updated = {
+    ...baseProfile,
+    ...validatedScores,
+    strengths: [
+      ...(baseProfile.strengths || []),
+      ...(benchmarkResults.strengths || [])
+    ].filter((v, i, a) => a.indexOf(v) === i),
+    weaknesses: [
+      ...(baseProfile.weaknesses || []),
+      ...(benchmarkResults.weaknesses || [])
+    ].filter((v, i, a) => a.indexOf(v) === i),
+    verified: true,
+    description: benchmarkResults.description || baseProfile.description,
+    lastUpdated: new Date().toISOString()
+  };
+
+  // Store in known profiles
+  KNOWN_PROFILES[model] = updated;
+
+  return {
+    verified: true,
+    lastUpdated: updated.lastUpdated,
+    scores: validatedScores
+  };
+}
+
+/**
+ * Get verification status for all known models.
+ *
+ * @returns {Array<{ model: string, verified: boolean, lastUpdated: string|null, needsVerification: boolean }>}
+ */
+function getVerificationStatus() {
+  return Object.entries(KNOWN_PROFILES).map(([model, profile]) => ({
+    model,
+    verified: profile.verified === true,
+    lastUpdated: profile.lastUpdated || null,
+    needsVerification: profile.verified !== true
+  }));
 }
 
 // ---------------------------------------------------------------------------
@@ -457,6 +533,8 @@ module.exports = {
   // Profile resolution
   getProfile,
   isVerified,
+  verifyProfile,
+  getVerificationStatus,
   getCapability,
 
   // Profile management

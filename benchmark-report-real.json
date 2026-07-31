@@ -1595,5 +1595,7 @@
         "scope_pro_matrix": false
       }
     ]
-  }
+  },
+  "simulated": true,
+  "note": "Despite the name, this is a deterministic simulation. total_duration_ms of 4ms for 10 tasks is impossible with real API calls."
 }

@@ -865,5 +865,7 @@
     "A variabilidade de qualidade com Matrix (stddev=0.68) é muito menor que sem Matrix (stddev=1.84). O pipeline torna os resultados previsíveis e consistentes.",
     "Model Independence Score (MIS) é 0.95 — Alto. A qualidade do pipeline Matrix é praticamente independente do modelo base. Trocar o modelo dificilmente afetará os resultados.",
     "Eficiência (qualidade por chamada LLM) é menor com Matrix (2.994 vs 55.1). Avaliar se o aumento de qualidade compensa o maior número de chamadas."
-  ]
+  ],
+  "simulated": true,
+  "note": "Deterministic simulation — does NOT represent real model performance. Run benchmark:real for actual results."
 }

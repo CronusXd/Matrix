@@ -1,6 +1,6 @@
 {
   "name": "matrix-engine",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "private": true,
   "description": "Matrix — Model Amplification Engine. Maximizes LLM performance through externalized intelligence.",
   "main": "src/server.js",
@@ -10,7 +10,7 @@
     "seed": "node src/seed.js",
     "benchmark:gap": "node src/benchmarks/model-gap-benchmark.js --format json",
     "lint": "eslint src/",
-    "test": "echo 'Tests not yet migrated to new architecture' && exit 0"
+    "test": "node test/adapter.test.js && node test/pipeline.test.js && node test/chat-amplification.test.js"
   },
   "dependencies": {
     "fastify": "^5.0.0",

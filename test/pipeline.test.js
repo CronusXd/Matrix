@@ -30,9 +30,9 @@ async function run() {
   // Reload pipeline to pick up env change
   let pipelineModule = require('../src/pipeline');
 
-  // Test 1: returns false when env var not set
-  assert(pipelineModule.isAmplificationEnabled() === false,
-    'isAmplificationEnabled() returns false when env var not set');
+  // Test 1: returns true when env var not set (new default = true)
+  assert(pipelineModule.isAmplificationEnabled() === true,
+    'isAmplificationEnabled() returns true when env var not set (default on)');
 
   // Test 2: returns false when env var is not 'true'
   process.env.MATRIX_ENABLE_AMPLIFICATION = 'false';
@@ -45,14 +45,14 @@ async function run() {
   process.env.MATRIX_ENABLE_AMPLIFICATION = '1';
   delete require.cache[require.resolve('../src/pipeline')];
   pipelineModule = require('../src/pipeline');
-  assert(pipelineModule.isAmplificationEnabled() === false,
-    'isAmplificationEnabled() returns false with MATRIX_ENABLE_AMPLIFICATION=1');
+  assert(pipelineModule.isAmplificationEnabled() === true,
+    'isAmplificationEnabled() returns true with MATRIX_ENABLE_AMPLIFICATION=1');
 
   process.env.MATRIX_ENABLE_AMPLIFICATION = 'yes';
   delete require.cache[require.resolve('../src/pipeline')];
   pipelineModule = require('../src/pipeline');
-  assert(pipelineModule.isAmplificationEnabled() === false,
-    'isAmplificationEnabled() returns false with MATRIX_ENABLE_AMPLIFICATION=yes');
+  assert(pipelineModule.isAmplificationEnabled() === true,
+    'isAmplificationEnabled() returns true with MATRIX_ENABLE_AMPLIFICATION=yes');
 
   // Test 3: returns true when env var is exactly 'true'
   process.env.MATRIX_ENABLE_AMPLIFICATION = 'true';

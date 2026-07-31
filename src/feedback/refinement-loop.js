@@ -107,9 +107,14 @@ async function refine(task, provider, context, strategy, options) {
       // Step 1: Execute strategy with current context
       let result;
       try {
+        // If context has a modifiedPrompt from previous feedback, use it
+        const execOptions = { ...opts };
+        if (currentContext && currentContext.modifiedPrompt) {
+          execOptions.modifiedPrompt = currentContext.modifiedPrompt;
+        }
         result = await (modules.executeStrategy)
-          ? modules.executeStrategy(currentStrategy, task, provider, currentContext, opts)
-          : await getStrategyExecute(currentStrategy)(task, provider, currentContext, opts);
+          ? modules.executeStrategy(currentStrategy, task, provider, currentContext, execOptions)
+          : await getStrategyExecute(currentStrategy)(task, provider, currentContext, execOptions);
       } catch (execErr) {
         // Strategy execution failed entirely
         history.push({
@@ -402,6 +407,15 @@ function applyFeedback(context, strategy, feedback, failureAnalysis, iteration) 
       newStrategy.requiresJudge = true;
       newStrategy.strictMode = true;
     }
+  }
+
+  // Inject modified prompt from feedback into context
+  if (feedback && feedback.modifiedPrompt) {
+    if (!newContext) {
+      newContext = { metadata: { generated_at: new Date().toISOString() }, files: [], feedback: [] };
+    }
+    newContext.modifiedPrompt = feedback.modifiedPrompt;
+    changes.push('context:injected_modified_prompt');
   }
 
   return {

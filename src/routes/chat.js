@@ -64,65 +64,82 @@ async function chatCompletions(request, reply) {
     }
 
     // ── Amplification Pipeline ───────────────────────────────────────────
-    // Non-streaming only — amplification is incompatible with streaming
-    if (!task.stream && isAmplificationEnabled()) {
-      logger.info({ msg: 'Amplification enabled — running pipeline', task_id: task.taskId });
+    // All requests go through the amplification pipeline.
+    // There is NO direct provider.chat() path — the model output is always
+    // treated as UNTRUSTED INTERMEDIATE RESULT until validated.
 
-      try {
-        const amplifiedResult = await amplify(body.messages, {
-          apiKey: providerApiKey,
-          model: task.model,
-          provider: provider,
-          projectRoot: process.cwd()
-        });
-
-        if (amplifiedResult) {
-          const elapsed = Date.now() - startTime;
-          logger.info({
-            msg: 'Amplified chat completion done',
-            task_id: task.taskId,
-            strategy: amplifiedResult.metadata?.strategy,
-            complexity: amplifiedResult.metadata?.complexity,
-            elapsed_ms: elapsed,
-            tokens: amplifiedResult.usage
-          });
-
-          const response = formatCompletionResponse(task, {
-            content: amplifiedResult.content,
-            usage: amplifiedResult.usage,
-            model: task.model
-          });
-          return reply.send(response);
-        }
-        // Se amplify retornar null, cai para o fluxo normal
-        logger.info({ msg: 'Amplification returned null — falling back to direct call', task_id: task.taskId });
-      } catch (ampErr) {
-        logger.errorObj(ampErr, { context: 'amplification_pipeline', task_id: task.taskId });
-        // Fall through to normal flow on amplification error
-      }
+    if (!isAmplificationEnabled()) {
+      logger.warn({ msg: 'Amplification disabled — refusing direct call', task_id: task.taskId });
+      return reply.code(503).send(formatErrorResponse(
+        'Matrix amplification is disabled. Set MATRIX_ENABLE_AMPLIFICATION=true to enable.',
+        'AMPLIFICATION_DISABLED',
+        503
+      ));
     }
 
-    // Non-streaming: call the provider
-    const result = await provider.chat(task.messages, {
-      apiKey: providerApiKey,
-      model: task.model,
-      temperature: task.config.temperature,
-      max_tokens: task.config.max_tokens
-    });
+    try {
+      const amplifiedResult = await amplify(body.messages, {
+        apiKey: providerApiKey,
+        model: task.model,
+        provider: provider,
+        projectRoot: process.cwd()
+      });
 
-    const elapsed = Date.now() - startTime;
-    logger.info({
-      msg: 'Chat completion done',
-      task_id: task.taskId,
-      provider: task.provider,
-      model: task.model,
-      elapsed_ms: elapsed,
-      tokens: result.usage
-    });
+      if (!amplifiedResult) {
+        logger.error({ msg: 'Amplification returned null', task_id: task.taskId });
+        return reply.code(500).send(formatErrorResponse(
+          'Amplification pipeline failed to produce a result.',
+          'AMPLIFICATION_FAILED',
+          500
+        ));
+      }
 
-    // Step 7: Format OpenAI-compatible response
-    const response = formatCompletionResponse(task, result);
-    return reply.send(response);
+      // ── Final Quality Gate ──────────────────────────────────────────
+      const gateResult = finalQualityGate(amplifiedResult);
+      if (!gateResult.passed) {
+        logger.warn({
+          msg: 'Quality Gate rejected response',
+          task_id: task.taskId,
+          reason: gateResult.reason,
+          score: gateResult.score
+        });
+        return reply.code(422).send(formatErrorResponse(
+          `Quality Gate: ${gateResult.reason} (score: ${gateResult.score}/10)`,
+          'QUALITY_GATE_FAILED',
+          422
+        ));
+      }
+
+      const elapsed = Date.now() - startTime;
+      logger.info({
+        msg: 'Amplified chat completion done',
+        task_id: task.taskId,
+        strategy: amplifiedResult.metadata?.strategy,
+        complexity: amplifiedResult.metadata?.complexity,
+        validationVerdict: amplifiedResult.metadata?.validationVerdict,
+        validationScore: amplifiedResult.metadata?.validationScore,
+        elapsed_ms: elapsed,
+        tokens: amplifiedResult.usage
+      });
+
+      const response = formatCompletionResponse(task, {
+        content: amplifiedResult.content,
+        usage: amplifiedResult.usage,
+        model: task.model
+      });
+      return reply.send(response);
+
+    } catch (ampErr) {
+      logger.errorObj(ampErr, {
+        context: 'amplification_pipeline',
+        task_id: task.taskId
+      });
+      return reply.code(500).send(formatErrorResponse(
+        `Amplification pipeline error: ${ampErr.message}`,
+        'AMPLIFICATION_FAILED',
+        500
+      ));
+    }
 
   } catch (err) {
     const elapsed = Date.now() - startTime;
@@ -156,9 +173,16 @@ async function chatCompletions(request, reply) {
  * @param {number} startTime — Request start timestamp
  */
 async function handleStreaming(request, reply, provider, task, apiKey, startTime) {
-  // For a basic implementation, we simulate streaming by sending the full
-  // response as chunks. Full streaming with provider-level SSE proxying
-  // can be added later.
+  /**
+   * STREAMING — Known Limitations (v3.0.1):
+   *
+   * - Streaming does NOT pass through the amplification pipeline.
+   * - The full response is collected, validated, then streamed in chunks.
+   * - Current chunking (20 chars, 20ms delay) is a BASIC SIMULATION.
+   * - Real SSE proxying from the provider is planned for v3.1.0.
+   *
+   * For tasks requiring amplification, prefer non-streaming mode.
+   */
   logger.info({ msg: 'Streaming mode — basic implementation', task_id: task.taskId });
 
   try {
@@ -221,6 +245,44 @@ async function handleStreaming(request, reply, provider, task, apiKey, startTime
  */
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * Final Quality Gate — verifies that the amplified result meets minimum
+ * quality standards before being returned to the client.
+ *
+ * Rules:
+ *   - If validationScore >= 8 → PASS (high confidence)
+ *   - If validationScore >= 5 → PASS (acceptable)
+ *   - If validationScore < 5  → FAIL (insufficient quality)
+ *   - If no validation data   → PASS with warning (can't block without evidence)
+ *
+ * @param {Object} amplifiedResult — Result from amplify()
+ * @returns {{ passed: boolean, reason: string, score: number|null }}
+ */
+function finalQualityGate(amplifiedResult) {
+  const meta = amplifiedResult.metadata || {};
+
+  // If no validation was performed, we cannot block — log and proceed
+  if (meta.validationScore === null || meta.validationScore === undefined) {
+    return { passed: true, reason: 'no validation data — proceeding', score: null };
+  }
+
+  const score = meta.validationScore;
+
+  if (score >= 8) {
+    return { passed: true, reason: 'high confidence', score };
+  }
+
+  if (score >= 5) {
+    return { passed: true, reason: 'acceptable quality', score };
+  }
+
+  return {
+    passed: false,
+    reason: `insufficient quality score (${score}/10). Verdict: ${meta.validationVerdict || 'unknown'}`,
+    score
+  };
 }
 
 module.exports = chatCompletions;

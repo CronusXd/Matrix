@@ -42,7 +42,12 @@ async function run() {
   console.log('\n--- D3.2: Feature flag default ---');
 
   delete process.env.MATRIX_ENABLE_AMPLIFICATION;
-  assert(isAmplificationEnabled() === false, 'D3.2: amplification disabled by default (no env var)');
+  assert(isAmplificationEnabled() === true, 'D3.2: amplification enabled by default (no env var)');
+
+  // Explicit disable
+  process.env.MATRIX_ENABLE_AMPLIFICATION = 'false';
+  assert(isAmplificationEnabled() === false, 'D3.2b: explicitly disabled');
+  delete process.env.MATRIX_ENABLE_AMPLIFICATION;
 
   // ── D3.3: Feature flag true enables amplification ────────────────────────
   console.log('\n--- D3.3: Feature flag true ---');
@@ -53,7 +58,7 @@ async function run() {
   // ── D3.4: amplify() returns null when disabled ───────────────────────────
   console.log('\n--- D3.4: amplify() when disabled ---');
 
-  delete process.env.MATRIX_ENABLE_AMPLIFICATION;
+  process.env.MATRIX_ENABLE_AMPLIFICATION = 'false';
   const resultDisabled = await amplify([{ role: 'user', content: 'Hello' }], {
     apiKey: 'test-key',
     model: 'test-model',

@@ -5,7 +5,7 @@
  *
  * Este é o ORQUESTRADOR INTERNO da Matrix. Conecta todos os módulos de amplificação.
  *
- * Feature flag: MATRIX_ENABLE_AMPLIFICATION=true (default=false)
+ * Feature flag: MATRIX_ENABLE_AMPLIFICATION=false (default=true)
  * Se desabilitado, amplify() retorna null e o proxy simples é usado.
  *
  * CommonJS module. Zero additional npm dependencies.
@@ -27,7 +27,8 @@ const logger = require('./utils/logger');
  * @returns {boolean}
  */
 function isAmplificationEnabled() {
-  return process.env.MATRIX_ENABLE_AMPLIFICATION === 'true';
+  // Amplification is ON by default. Set MATRIX_ENABLE_AMPLIFICATION=false to disable.
+  return process.env.MATRIX_ENABLE_AMPLIFICATION !== 'false';
 }
 
 // ── Main Pipeline ─────────────────────────────────────────────────────────────
@@ -376,39 +377,12 @@ function buildAmplifiedResponse(
       validationScore: evaluation ? evaluation.score : null,
       validationVerdict: evaluation ? evaluation.verdict : null,
       refinementIterations,
-      amplificationMetrics: {
-        modelBaselineEstimate: profile.coding,
-        strategyBoost: getStrategyBoost(strategy.name),
-        estimatedAmplification: Math.min(1.0, profile.coding + getStrategyBoost(strategy.name))
-      },
       timestamp: new Date().toISOString()
     }
   };
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-
-/**
- * Retorna o boost de amplificação estimado para uma estratégia.
- *
- * Boost values (aditive over model baseline):
- *   - minimal:  +0.05
- *   - standard: +0.12
- *   - deep:     +0.20
- *   - extreme:  +0.30
- *
- * @param {string} strategyName
- * @returns {number} 0.0–0.30
- */
-function getStrategyBoost(strategyName) {
-  const boosts = {
-    minimal: 0.05,
-    standard: 0.12,
-    deep: 0.20,
-    extreme: 0.30
-  };
-  return boosts[strategyName] || 0;
-}
 
 /**
  * Extrai keywords de um objeto TaskAnalysis para busca de contexto.

@@ -30,7 +30,7 @@ async function run() {
   console.log('--- Feature Flag ---');
 
   delete process.env.MATRIX_ENABLE_AMPLIFICATION;
-  assert(isAmplificationEnabled() === false, 'disabled by default');
+  assert(isAmplificationEnabled() === true, 'enabled by default (v3.0.1 on-by-default)');
 
   process.env.MATRIX_ENABLE_AMPLIFICATION = 'true';
   assert(isAmplificationEnabled() === true, 'enabled with env=true');
@@ -110,21 +110,9 @@ async function run() {
       assert(result.metadata.amplified === true, 'metadata.amplified is true');
       assert(typeof result.metadata.strategy === 'string', 'has strategy name');
 
-      // Check amplification metrics
-      if (result.metadata.amplificationMetrics) {
-        assert(typeof result.metadata.amplificationMetrics.modelBaselineEstimate === 'number',
-          'has modelBaselineEstimate');
-        assert(typeof result.metadata.amplificationMetrics.strategyBoost === 'number',
-          'has strategyBoost');
-        assert(typeof result.metadata.amplificationMetrics.estimatedAmplification === 'number',
-          'has estimatedAmplification');
-        assert(result.metadata.amplificationMetrics.estimatedAmplification <= 1.0,
-          'estimatedAmplification <= 1.0');
-        assert(result.metadata.amplificationMetrics.estimatedAmplification >= 0,
-          'estimatedAmplification >= 0');
-      } else {
-        console.log('  (amplificationMetrics not found in metadata)');
-      }
+      // amplificationMetrics was removed in v3.0.1 — verify it's gone
+      assert(result.metadata.amplificationMetrics === undefined,
+        'amplificationMetrics removed as expected (v3.0.1)');
     }
   } catch (e) {
     console.log(`  ? amplify() error (may be expected in test env): ${e.message}`);

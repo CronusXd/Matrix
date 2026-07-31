@@ -21,6 +21,23 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
+// ── Context Cache ─────────────────────────────────────────────────────────────
+
+/**
+ * Simple in-memory cache for gatherContext() results.
+ * Reduces redundant disk I/O and scoring when the same task context is requested
+ * within a short window.
+ *
+ * @type {Map<string, { result: Object, timestamp: number }>}
+ */
+const _contextCache = new Map();
+
+/** Cache TTL in milliseconds (5 minutes). */
+const CACHE_TTL_MS = 5 * 60 * 1000;
+
+/** Maximum cache entries before eviction. */
+const CACHE_MAX_ENTRIES = 50;
+
 // ---------------------------------------------------------------------------
 // Default Configuration
 // ---------------------------------------------------------------------------
@@ -688,7 +705,15 @@ function gatherContext(task, options) {
   // Extract keywords from task or options
   const keywords = opts.keywords || extractKeywords(task);
 
+  // ── Cache check ───────────────────────────────────────────────────────
+  const cacheKey = JSON.stringify({ keywords: keywords.slice().sort(), rootDir });
+  const cached = _contextCache.get(cacheKey);
+  if (cached && (Date.now() - cached.timestamp) < CACHE_TTL_MS) {
+    return cached.result;
+  }
+
   if (!fs.existsSync(rootDir)) {
+
     return { context: null, files: [], metadata: { error: `Root dir not found: ${rootDir}` } };
   }
 
@@ -696,11 +721,15 @@ function gatherContext(task, options) {
   const { files, docFiles } = cb1Discovery(config, rootDir);
 
   if (files.length === 0) {
-    return {
+    const emptyResult = {
       context: { metadata: { generated_at: new Date().toISOString(), keywords, total_scored: 0, kept: 0, eliminated: 0 }, files: [], excluded: [] },
       files: [],
       metadata: { discovered: 0, scored: 0, kept: 0 }
     };
+
+    // Cache the empty result too
+    _contextCache.set(cacheKey, { result: emptyResult, timestamp: Date.now() });
+    return emptyResult;
   }
 
   // CB.2: Scoring
@@ -712,7 +741,7 @@ function gatherContext(task, options) {
   // CB.4-CB.6: Order, Compress, Assemble
   const { context } = cb4to6(kept, eliminated, keywords, config);
 
-  return {
+  const result = {
     context,
     files: kept.map(f => f.path),
     metadata: {
@@ -723,6 +752,17 @@ function gatherContext(task, options) {
       keywords
     }
   };
+
+  // ── Cache store ───────────────────────────────────────────────────────
+  _contextCache.set(cacheKey, { result, timestamp: Date.now() });
+
+  // Limit cache size (FIFO eviction)
+  if (_contextCache.size > CACHE_MAX_ENTRIES) {
+    const firstKey = _contextCache.keys().next().value;
+    _contextCache.delete(firstKey);
+  }
+
+  return result;
 }
 
 // ---------------------------------------------------------------------------
@@ -857,6 +897,18 @@ function escapeRegex(str) {
 // Exports
 // ---------------------------------------------------------------------------
 
+// ── Cache management ─────────────────────────────────────────────────────────
+
+/**
+ * Clear the context cache.
+ * Useful for testing or forcing a fresh context gather.
+ */
+function clearCache() {
+  _contextCache.clear();
+}
+
+// ── Exports ───────────────────────────────────────────────────────────────────
+
 module.exports = {
   // CB pipeline functions
   cb1Discovery,
@@ -869,6 +921,7 @@ module.exports = {
   scoreRelevance,
   optimizeContext,
   assembleContext,
+  clearCache,
 
   // Compression
   compressContent,

@@ -37,6 +37,17 @@
  *   const report = await runBenchmark({ model: 'oc/flash', frontier: 'oc/pro' });
  */
 
+/**
+ * ⚠️  SYNTHETIC BENCHMARK — NOT REAL DATA  ⚠️
+ * ============================================
+ * This benchmark uses deterministic pseudo-random generators (deterministicGaussian,
+ * deterministicFloat, deterministicBool) and hardcoded QUALITY_CONFIG values.
+ * ZERO real model calls are made. Results are ILLUSTRATIVE ONLY.
+ *
+ * A real benchmark with actual model calls is planned for v3.1.0.
+ * DO NOT cite these numbers as evidence of real amplification.
+ */
+
 'use strict';
 
 const fs = require('fs');
@@ -1210,6 +1221,7 @@ function buildTaskComparison(allResults) {
  * @returns {Object} Complete benchmark report
  */
 async function runBenchmark(options = {}) {
+  console.warn('[BENCHMARK] ⚠️  SYNTHETIC BENCHMARK — NOT REAL DATA. Zero model calls. Results are illustrative only.');
   const opts = {
     model: options.model || DEFAULT_MODEL,
     frontend: options.frontier || DEFAULT_FRONTIER,

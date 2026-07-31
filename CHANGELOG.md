@@ -1,60 +1,63 @@
 # Changelog
 
-Todas as mudanças notaveis neste projeto serao documentadas neste arquivo.
+## [3.1.0] — 2026-07-31
 
-O formato e baseado no [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
-e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
-
-## [2.0.0] — 2026-07-28
+### Breaking Change
+- **Amplification is now ON by default.** `MATRIX_ENABLE_AMPLIFICATION` defaults to `true`.
+  Set `MATRIX_ENABLE_AMPLIFICATION=false` to explicitly disable.
+- **Direct provider.chat() bypass removed.** All requests now go through the amplification
+  pipeline. Disabling amplification (`MATRIX_ENABLE_AMPLIFICATION=false`) now returns HTTP 503
+  instead of falling back to direct model calls. This ensures the model output is always validated
+  before reaching the client.
 
 ### Added
+- `finalQualityGate()` in chat route — blocks responses with validation score < 5
+- `calibrationStatus: 'uncalibrated'` field on all model profiles
+- `verifyProfile()` and `getVerificationStatus()` functions for model profile management
+- Path traversal sanitization for `projectRoot` in context gathering
+- `modifiedPrompt` injection in refinement loop for smarter retries
 
-- Pipeline executor v2.0 com arquitetura modular e especialistas dedicados
-- Context Builder com compressao semantica (modo `smart`), pontuacao de relevancia e eliminacao de contexto obsoleto
-- Agent Router com 38 especialistas categorizados por dominio e suporte a YAML de configuracao
-- Sistema de Observabilidade com registro de eventos, metricas cumulativas e tracking de agentes/ferramentas
-- Memory Service com persistencia de estado, checkpoints e backup automatico
-- State Machine com validacao de transicoes, historico e rollback de estados
-- Fable Method integrado ao pipeline (classificacao, definicao de done, evidencias, decisao, execucao, verificacao, report)
-- Fable Judge para verificacao adversarial de trabalhos concluidos com veredito (VERIFIED / CAVEATS / REFUTED / VIOLATION)
-- Code Reviewer para revisao tecnica obrigatoria (corretude, seguranca, estilo, testes)
-- Rollback Manager com snapshots automaticos pre-execucao e restauracao por ID
-- Parallel Executor para execucao concorrente de tarefas independentes com `script:true`
-- PR Generator para criacao automatica de Pull Requests no fluxo de delivery
-- Model Voting para votacao entre modelos com suporte assincrono e síncrono
-- SIEM Exporter para exportacao de eventos, metricas e compliance reports
-- Multi-tenant com isolamento por tenant (router, estados, logs, metricas, memoria)
-- Auth Gate com validacao JWT e provider externo configravel
-- RAG Query com suporte a modo TF-IDF e hybrid (embeddings + TF-IDF)
-- PostgreSQL Memory Adapter com fallback JSON automatico
-- Documentacao em `pipeline/` com configs, templates e guias de uso
-
-### Changed
-
-- Migracao de arquitetura monolitica para pipeline em 4 fases com especialistas
-- Fluxo de execucao agora exige verificacao obrigatoria (Judge + Code Review) antes de commit
-- State machine agora le e valida pipeline.yaml, state.json, checklist.json em cada transicao
-- Observabilidade separada do executor principal em modulos independentes
+### Removed
+- `getStrategyBoost()` function — was returning fabricated amplification metrics
+- `amplificationMetrics` block from `buildAmplifiedResponse()` — was synthetic data
 
 ### Fixed
+- Benchmark now explicitly warns "SYNTHETIC BENCHMARK — NOT REAL DATA"
+- Streaming limitations documented (bypasses amplification — known, planned for v3.2.0)
 
-- Dependencia entre OpenTelemetry e @opentelemetry/api corrigida com fallback graceful
-- Agent Router agora carrega catalogo de agentes de fonte externa (YAML) em vez de hardcoded
-- Coverage gate no CI agora falha o pipeline quando thresholds nao sao atingidos
-
-## [1.0.0] — 2026-07-26
+## [3.0.0] — 2026-07-31
 
 ### Added
+- Model Amplification Engine — pipeline conectado ao fluxo de requisição
+- Provider Adapter Bridge (`src/providers/adapter.js`) — unifica protocolo `call()` ↔ `chat()`
+- Pipeline Integrator (`src/pipeline.js`) — orquestra 10 módulos de amplificação
+- Feature flag `MATRIX_ENABLE_AMPLIFICATION` (default: false)
+- Testes: 133 assertions (adapter, pipeline, chat-amplification)
+- Context Engine cache com TTL de 5 minutos
+- Model Profile verification pipeline
+- Amplification Score no metadata de resposta
+- projectRoot sanitization (path traversal protection)
 
-- Pipeline basico de 4 fases (Analise, Execucao, Validacao, Revisao)
-- Orchestrator central para coordenacao de agentes especialistas
-- Fable Method como metodologia de resolucao de problemas (7 steps)
-- Fable Judge para verificacao adversarial de entregas
-- Code Reviewer para revisao tecnica de codigo
-- Tabela de roteamento com 38 agentes especialistas
-- Sistema de todolist para rastreamento de tarefas
-- Rollback basico com snapshots
-- Configuracoes iniciais do pipeline (state.json, events.log, metrics.json)
+### Architecture
+- Task Intelligence — deterministic task analysis (complexity 1-5)
+- Strategy Engine — 4 strategies: minimal, standard, deep, extreme
+- Context Engine — CB.1-CB.6 pipeline (discovery, scoring, compression)
+- Context Quality Evaluator — completeness, relevance, noise analysis
+- Prompt Compiler — structured system + user prompts
+- Model Capability Profile — 5 known models with capability scores
+- Model Strategy Adapter — adapts strategy to model capabilities
+- Validation Engine — tests, build, lint, typecheck
+- Result Evaluator — SUCCESS/PARTIAL/FAILURE/DEGRADED verdict
+- Failure Analyzer — 11 failure categories
+- Feedback Engine — structured, actionable feedback
+- Refinement Loop — max 3 iterations with feedback injection
+- Provider adapters: DeepSeek, OpenAI, Anthropic, OpenRouter
+- OpenAI-compatible API (`/v1/chat/completions`)
+- Dashboard with API key management
+- API key management: SHA-256 hashing, AES-256-GCM encryption
 
-[2.0.0]: https://github.com/opencode-ai/matrix/releases/tag/v2.0.0
-[1.0.0]: https://github.com/opencode-ai/matrix/releases/tag/v1.0.0
+## [2.0.0] — 2026-07-28
+*(Matrix extracted as standalone project)*
+
+## [1.0.0] — 2026-07-26
+*(Initial pipeline design)*

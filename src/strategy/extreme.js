@@ -64,43 +64,61 @@ async function execute(task, provider, context, options) {
   const decomposition = decomposeTask(task, context, maxSubTasks);
   timeline.push({ step: 'decomposition', subTasks: decomposition.length, ms: Date.now() - startTime });
 
-  // Step 2: Execute sub-tasks (sequential by default, can be parallelized)
+  // ── Step 2: Execute sub-tasks ───────────────────────────────────────────
+  // P3.2: Support parallel execution when sub-tasks have no inter-dependencies.
+  // Default is sequential (parallel: false) to avoid rate-limit issues.
+  const useParallel = options.parallel === true &&
+    decomposition.every((t, i, arr) =>
+      !arr.some((other, j) => j !== i && other.dependsOn && other.dependsOn.includes(t.id))
+    );
+
   const subResults = [];
-  for (let i = 0; i < decomposition.length; i++) {
-    const subTask = decomposition[i];
-    const { systemPrompt, userPrompt } = buildSubTaskPrompt(subTask, task, context, i + 1, decomposition.length);
 
-    let rawResult;
-    try {
-      rawResult = await provider.call({ system: systemPrompt, user: userPrompt });
-    } catch (err) {
-      subResults.push({
-        subTaskId: i + 1,
-        success: false,
-        error: err.message,
-        content: `[Error: ${err.message}]`
-      });
-      continue;
+  if (useParallel) {
+    // ── Parallel execution ───────────────────────────────────────────────
+    const promises = decomposition.map((subTask, i) =>
+      executeSubTask(subTask, task, context, i + 1, decomposition.length, provider)
+    );
+
+    const parallelResults = await Promise.allSettled(promises);
+
+    for (const result of parallelResults) {
+      if (result.status === 'fulfilled') {
+        subResults.push(result.value);
+        if (result.value.usage) {
+          totalUsage.prompt_tokens += result.value.usage.prompt_tokens || 0;
+          totalUsage.completion_tokens += result.value.usage.completion_tokens || 0;
+          totalUsage.total_tokens += result.value.usage.total_tokens || 0;
+        }
+      } else {
+        // Find which sub-task failed (we don't have id here from allSettled)
+        subResults.push({
+          subTaskId: -1,
+          success: false,
+          error: result.reason ? result.reason.message : 'Unknown parallel error',
+          content: `[Error: ${result.reason ? result.reason.message : 'Unknown'}]`,
+          title: 'failed'
+        });
+      }
     }
 
-    const content = normalizeOutput(rawResult);
+    timeline.push({ step: 'subtasks_parallel', count: decomposition.length, ms: Date.now() - startTime });
+  } else {
+    // ── Sequential execution (default) ────────────────────────────────────
+    for (let i = 0; i < decomposition.length; i++) {
+      const subTask = decomposition[i];
+      const result = await executeSubTask(subTask, task, context, i + 1, decomposition.length, provider);
 
-    subResults.push({
-      subTaskId: i + 1,
-      title: subTask.title,
-      success: true,
-      content,
-      usage: rawResult.usage || {}
-    });
+      subResults.push(result);
 
-    // Aggregate usage
-    if (rawResult.usage) {
-      totalUsage.prompt_tokens += rawResult.usage.prompt_tokens || 0;
-      totalUsage.completion_tokens += rawResult.usage.completion_tokens || 0;
-      totalUsage.total_tokens += rawResult.usage.total_tokens || 0;
+      if (result.usage) {
+        totalUsage.prompt_tokens += result.usage.prompt_tokens || 0;
+        totalUsage.completion_tokens += result.usage.completion_tokens || 0;
+        totalUsage.total_tokens += result.usage.total_tokens || 0;
+      }
+
+      timeline.push({ step: `subtask_${i + 1}`, ms: Date.now() - startTime });
     }
-
-    timeline.push({ step: `subtask_${i + 1}`, ms: Date.now() - startTime });
   }
 
   // Step 3: Synthesize results
@@ -358,6 +376,44 @@ function validateExtreme(content, task, subResults) {
 // Helpers
 // ---------------------------------------------------------------------------
 
+/**
+ * Execute a single sub-task.
+ * Extracted so it can be used in both sequential and parallel modes.
+ *
+ * @param {Object} subTask
+ * @param {Object} task
+ * @param {Object} [context]
+ * @param {number} step
+ * @param {number} total
+ * @param {Object} provider
+ * @returns {Promise<{ subTaskId: number, title: string, success: boolean, content: string, usage: Object, error?: string }>}
+ */
+async function executeSubTask(subTask, task, context, step, total, provider) {
+  const { systemPrompt, userPrompt } = buildSubTaskPrompt(subTask, task, context, step, total);
+
+  let rawResult;
+  try {
+    rawResult = await provider.call({ system: systemPrompt, user: userPrompt });
+  } catch (err) {
+    return {
+      subTaskId: step,
+      title: subTask.title,
+      success: false,
+      error: err.message,
+      content: `[Error: ${err.message}]`,
+      usage: {}
+    };
+  }
+
+  return {
+    subTaskId: step,
+    title: subTask.title,
+    success: true,
+    content: normalizeOutput(rawResult),
+    usage: rawResult.usage || {}
+  };
+}
+
 function normalizeOutput(rawResult) {
   if (typeof rawResult === 'string') return rawResult;
   if (rawResult && typeof rawResult.output === 'string') return rawResult.output;
@@ -374,6 +430,7 @@ function normalizeOutput(rawResult) {
 module.exports = {
   definition,
   execute,
+  executeSubTask,
   decomposeTask,
   buildSubTaskPrompt,
   buildSynthesisPrompt,
