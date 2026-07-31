@@ -1,7 +1,0 @@
-Snapshot ID: hlrn-2026-07-30T00-44-37-947Z
-Label: auto-fase4_approved-to-delivery-1785372277698
-Timestamp: 2026-07-30T00:44:37.947Z
-Branch: master
-Commit: 599dc3fb5a99971cc6a0a98fd478f42bb8ba3410
-Backup Branch: matrix-rollback-hlrn-2026-07-30T00-44-37-947Z
-Criado em: 2026-07-30T00:44:37.947Z
