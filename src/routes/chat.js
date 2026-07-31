@@ -18,6 +18,7 @@ const { formatCompletionResponse, formatStreamChunk, formatStreamDone, formatErr
 const { getConfig, getProviderApiKey } = require('../db/configs');
 const { BadRequestError } = require('../utils/errors');
 const logger = require('../utils/logger');
+const { amplify, isAmplificationEnabled } = require('../pipeline');
 
 /**
  * POST /v1/chat/completions route handler.
@@ -60,6 +61,45 @@ async function chatCompletions(request, reply) {
     // Step 6: Handle streaming vs non-streaming
     if (task.stream) {
       return handleStreaming(request, reply, provider, task, providerApiKey, startTime);
+    }
+
+    // ── Amplification Pipeline ───────────────────────────────────────────
+    // Non-streaming only — amplification is incompatible with streaming
+    if (!task.stream && isAmplificationEnabled()) {
+      logger.info({ msg: 'Amplification enabled — running pipeline', task_id: task.taskId });
+
+      try {
+        const amplifiedResult = await amplify(body.messages, {
+          apiKey: providerApiKey,
+          model: task.model,
+          provider: provider,
+          projectRoot: process.cwd()
+        });
+
+        if (amplifiedResult) {
+          const elapsed = Date.now() - startTime;
+          logger.info({
+            msg: 'Amplified chat completion done',
+            task_id: task.taskId,
+            strategy: amplifiedResult.metadata?.strategy,
+            complexity: amplifiedResult.metadata?.complexity,
+            elapsed_ms: elapsed,
+            tokens: amplifiedResult.usage
+          });
+
+          const response = formatCompletionResponse(task, {
+            content: amplifiedResult.content,
+            usage: amplifiedResult.usage,
+            model: task.model
+          });
+          return reply.send(response);
+        }
+        // Se amplify retornar null, cai para o fluxo normal
+        logger.info({ msg: 'Amplification returned null — falling back to direct call', task_id: task.taskId });
+      } catch (ampErr) {
+        logger.errorObj(ampErr, { context: 'amplification_pipeline', task_id: task.taskId });
+        // Fall through to normal flow on amplification error
+      }
     }
 
     // Non-streaming: call the provider

@@ -1,0 +1,199 @@
+{
+  "meta": {
+    "created_by": "@fable-method-agent",
+    "created_at": "2026-07-30T00:00:00Z",
+    "project": "Matrix v3.0.0 — Model Amplification Engine",
+    "classification": "Task — Multi-step implementation",
+    "total_phases": 5,
+    "principle": "REUSO ANTES DE CRIAR — módulos existentes preservados, apenas conectados"
+  },
+  "phases": [
+    {
+      "id": "A",
+      "name": "Provider Adapter Bridge",
+      "description": "Criar o adaptador que converte a interface provider.chat() → provider.call() para compatibilidade com as strategies. Este é o bloco mais fundamental — sem ele, nada no pipeline funciona.",
+      "specialist": "@senior-developer",
+      "is_parallelizable": false,
+      "tasks": [
+        {
+          "id": "A1",
+          "action": "Criar `src/providers/adapter.js` — Provider Adapter Bridge",
+          "details": "Função `createAdapter(provider, params)` que retorna objeto com método `.call()`",
+          "verifiable": "Arquivo existe, exporta createAdapter, wrap retorna objeto com .call()"
+        },
+        {
+          "id": "A2",
+          "action": "Implementar `.call(string)` — converte para messages[{role:'user', content:string}]",
+          "details": "Repassa para provider.chat(messages, {apiKey, model, temperature, max_tokens}). Retorna {content, usage} normalizado.",
+          "verifiable": "Teste: adapter.call('hello') → provider.chat foi chamado com [{role:'user', content:'hello'}]"
+        },
+        {
+          "id": "A3",
+          "action": "Implementar `.call({system, user})` — converte para messages[{role:'system', content:system}, {role:'user', content:user}]",
+          "details": "Mesmo repasse. Suporta ambas as assinaturas usadas pelas strategies (minimal usa string, standard usa objeto).",
+          "verifiable": "Teste: adapter.call({system:'sys', user:'usr'}) → provider.chat chamado com ambos os papéis"
+        },
+        {
+          "id": "A4",
+          "action": "Normalizar resposta para `{content, usage}` — compatível com expectativas das strategies",
+          "details": "Garantir que o retorno sempre tenha .content (string) e .usage ({prompt_tokens, completion_tokens, total_tokens})",
+          "verifiable": "Teste: typeof result.content === 'string' && result.usage && typeof result.usage.total_tokens === 'number'"
+        },
+        {
+          "id": "A5",
+          "action": "Preservar metadados do provider (model, metadata) no retorno",
+          "details": "Repassar model usado, metadados adicionais para logging/debug",
+          "verifiable": "result.model existe, result.metadata.provider existe"
+        }
+      ],
+      "verification": "Adapter exposto via `require('../providers/adapter').createAdapter(provider, params)` retorna objeto com `.call()` que aceita string e {system, user}. Testes unitários passam."
+    },
+    {
+      "id": "B",
+      "name": "Pipeline Integrator (amplify)",
+      "description": "Criar a função principal `amplify()` que orquestra o pipeline completo: TaskIntelligence → ModelProfile → Strategy → Context → PromptCompiler → Adapter → ProviderCall → Validation → Refinement. Feature flag `MATRIX_ENABLE_AMPLIFICATION` controla ativação.",
+      "specialist": "@senior-developer",
+      "is_parallelizable": false,
+      "tasks": [
+        {
+          "id": "B1",
+          "action": "Criar `src/pipeline.js` com função `async function amplify(messages, options)`",
+          "details": "Entry point principal. Recebe messages (array OpenAI) + options ({apiKey, model, provider, userId, temperature, max_tokens})",
+          "verifiable": "Módulo exporta {amplify, isAmplificationEnabled}"
+        },
+        {
+          "id": "B2",
+          "action": "Implementar leitura da feature flag `MATRIX_ENABLE_AMPLIFICATION`",
+          "details": "Ler de process.env. Converter string 'true'/'1' para boolean. Default: false (backward compat). Exportar função `isAmplificationEnabled()`.",
+          "verifiable": "isAmplificationEnabled() retorna false quando env não está set; true quando MATRIX_ENABLE_AMPLIFICATION=true"
+        },
+        {
+          "id": "B3",
+          "action": "Implementar fluxo de amplificação: TaskIntelligence → ModelProfile → Strategy → Context",
+          "details": "1. analyzeTask(messages) 2. getProfile(model) + findBestModel() 3. selectStrategy(task) + adaptStrategy(strategy, profile) 4. gatherContext(task) se complexity >= 3",
+          "verifiable": "Log estruturado mostra cada etapa do pipeline executada em ordem"
+        },
+        {
+          "id": "B4",
+          "action": "Implementar fluxo: PromptCompiler → ProviderAdapter → ProviderCall",
+          "details": "5. compilePrompt(task, context, strategy) para estratégias que usam system+user prompts 6. createAdapter(provider, {apiKey, model, ...}) 7. executeStrategy(strategy, task, adaptedProvider, context)",
+          "verifiable": "ProviderAdapter é criado e injetado corretamente na strategy"
+        },
+        {
+          "id": "B5",
+          "action": "Implementar validação e refinement loop (apenas para complexity >= 3)",
+          "details": "8. Validator.run(output) se strategy.requiresValidation 9. RefinementLoop.run() se validação falhar (máx 3 iterações). Complexity 1-2 (minimal) pula validação.",
+          "verifiable": "Refinement loop é executado apenas quando validação falha e complexity >= 3"
+        },
+        {
+          "id": "B6",
+          "action": "Retornar resultado normalizado: `{content, usage, metadata}`",
+          "details": "metadata deve incluir: strategy usado, model usado, complexity, taskType, duration, tokenCount, iterations (se refinement), validationResult (se aplicável)",
+          "verifiable": "Resultado compatível com o que chat.js espera para formatar resposta OpenAI"
+        }
+      ],
+      "verification": "Função amplify() aceita mensagens OpenAI e retorna {content, usage, metadata}. Pipeline completo executado quando flag ativa. Backward compat garantida quando flag desativada."
+    },
+    {
+      "id": "C",
+      "name": "Integração no chat.js + Feature Flag",
+      "description": "Modificar a rota de chat existente para condicionalmente usar o pipeline de amplificação. Preservar 100% do comportamento atual quando a flag estiver desativada.",
+      "specialist": "@senior-developer",
+      "is_parallelizable": false,
+      "tasks": [
+        {
+          "id": "C1",
+          "action": "Adicionar import do pipeline e verificação da feature flag no topo de chat.js",
+          "details": "const { amplify, isAmplificationEnabled } = require('../pipeline'); — NENHUMA outra importação modificada",
+          "verifiable": "Import adicionado sem quebrar imports existentes"
+        },
+        {
+          "id": "C2",
+          "action": "Adicionar branching condicional ANTES do provider.chat() atual (linha 66)",
+          "details": "if (isAmplificationEnabled()) { result = await amplify(task.messages, {apiKey, model, provider, ...}); } else { result = await provider.chat(...); // comportamento atual }",
+          "verifiable": "Com flag=false, o código executa exatamente o mesmo fluxo de antes (linhas 66-71 preservadas)"
+        },
+        {
+          "id": "C3",
+          "action": "Garantir compatibilidade do response format OpenAI",
+          "details": "O resultado do amplify() deve ser compatível com formatCompletionResponse(task, result) — mesma estrutura {content, usage, model} que provider.chat() retorna",
+          "verifiable": "POST /v1/chat/completions retorna mesmo formato JSON com e sem amplificação"
+        },
+        {
+          "id": "C4",
+          "action": "Adicionar `MATRIX_ENABLE_AMPLIFICATION=false` ao `.env.example`",
+          "details": "Seção: 'AMPLIFICATION — Matrix Amplification Engine'. Documentar que true ativa o pipeline completo com task intelligence, context gathering, e refinement.",
+          "verifiable": "Novo bloco documentado no .env.example com explicação clara"
+        }
+      ],
+      "verification": "Com MATRIX_ENABLE_AMPLIFICATION=false (default): servidor sobe, rota /v1/chat/completions funciona identicamente a antes. Com flag=true: pipeline de amplificação é executado. Response format OpenAI preservado em ambos os modos."
+    },
+    {
+      "id": "D",
+      "name": "Testes de Integração",
+      "description": "Testes unitários para o Provider Adapter, testes de integração para o Pipeline, e smoke test do servidor com e sem flag de amplificação.",
+      "specialist": "@senior-developer",
+      "is_parallelizable": false,
+      "tasks": [
+        {
+          "id": "D1",
+          "action": "Testes unitários: Provider Adapter (`test/adapter.test.js`)",
+          "details": "Testar .call(string), .call({system, user}), normalização de resposta, propagação de erros do provider",
+          "verifiable": "4+ testes passando com mock do provider"
+        },
+        {
+          "id": "D2",
+          "action": "Testes unitários: Pipeline (`test/pipeline.test.js`)",
+          "details": "Mockar provider, testar fluxo com flag ativada (amplify), testar isAmplificationEnabled() com diferentes valores de env, testar fallback com flag=false",
+          "verifiable": "5+ testes passando com mock do provider"
+        },
+        {
+          "id": "D3",
+          "action": "Teste de integração: chat.js com e sem amplificação (`test/chat-amplification.test.js`)",
+          "details": "Simular requisições POST /v1/chat/completions com e sem MATRIX_ENABLE_AMPLIFICATION. Verificar response format, metadados, e que o pipeline foi/não foi executado.",
+          "verifiable": "3+ testes de integração passando com servidor de teste"
+        },
+        {
+          "id": "D4",
+          "action": "Smoke test manual: iniciar servidor, enviar curl com flag=false e flag=true",
+          "details": "Verificar que o servidor sobe, health check responde, chat completions funciona em ambos os modos",
+          "verifiable": "Servidor inicia sem erros, health check 200, chat retorna JSON válido"
+        }
+      ],
+      "verification": "Todos os testes passam (unitários + integração). Servidor inicia e responde corretamente em ambos os modos de operação."
+    },
+    {
+      "id": "E",
+      "name": "Validação (Fable Judge) + Code Review",
+      "description": "Garantia de qualidade final: verificação adversarial pelo @fable-judge e revisão técnica pelo @code-reviewer. Máximo 3 tentativas de correção por fase.",
+      "specialist": "@fable-judge",
+      "tasks": [
+        {
+          "id": "E1",
+          "action": "@fable-judge: Verificação adversarial de todas as entregas",
+          "details": "Re-executar verificações, diffs, detectar testes enfraquecidos, verificar completude dos claims. Veredito: VERIFIED / CAVEATS / REFUTED.",
+          "verifiable": "Veredito documentado com evidências"
+        },
+        {
+          "id": "E2",
+          "action": "@code-reviewer: Revisão técnica completa",
+          "details": "Corretude técnica, segurança (secrets, injeção), estilo consistente, testes adequados. Veredito: APPROVED / CHANGES_NEEDED.",
+          "verifiable": "Code review documentada com issues encontrados e resolvidos"
+        },
+        {
+          "id": "E3",
+          "action": "Correção de issues (se necessário) — máx 3 iterações",
+          "details": "Se @fable-judge retornar REFUTED ou @code-reviewer retornar CHANGES_NEEDED → voltar ao @senior-developer para correção",
+          "verifiable": "Issues corrigidos e re-verificados"
+        },
+        {
+          "id": "E4",
+          "action": "Commit + Push ao GitHub (após aprovação de ambos)",
+          "details": "Commit message: 'feat: Model Amplification Engine — conecta pipeline de amplificação ao fluxo principal (Matrix v3.0.0)'",
+          "verifiable": "Commit no GitHub com os 4 arquivos alterados"
+        }
+      ],
+      "verification": "@fable-judge retorna VERIFIED ou VERIFIED WITH CAVEATS. @code-reviewer retorna APPROVED. Código commitado e pushed."
+    }
+  ]
+}
