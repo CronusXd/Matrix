@@ -72,14 +72,32 @@ function buildServer() {
     });
   });
 
-  // ── Dashboard Route (auth required) ──────────────────
+  // ── Login Page (no auth) ──────────────────────────────
+  server.get('/', async (request, reply) => {
+    const htmlPath = path.join(__dirname, '..', 'dashboard', 'login.html');
+    const html = fs.readFileSync(htmlPath, 'utf-8');
+    return reply.type('text/html').send(html);
+  });
+
+  // ── Dashboard Route (auth via header or ?key= param) ──
   server.get('/dashboard', async (request, reply) => {
+    // Support API key via query param: /dashboard?key=mx_...
+    if (request.query.key) {
+      request.headers.authorization = `Bearer ${request.query.key}`;
+    }
     await authMiddleware(request, reply);
     if (reply.sent) return;
     const htmlPath = path.join(__dirname, '..', 'dashboard', 'index.html');
     const html = fs.readFileSync(htmlPath, 'utf-8');
     return reply.type('text/html').send(html);
   });
+
+  // ── Health check (no auth) ─────────────────────────────
+  // ── Favicon + service worker (silence 404 noise) ──────
+  server.get('/favicon.ico', async (_, reply) => reply.code(204).send());
+  server.get('/sw.js', async (_, reply) => reply.code(204).send());
+
+  // ── Health check (no auth) ─────────────────────────────
   server.get('/health', async () => {
     return {
       status: 'ok',

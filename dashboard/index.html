@@ -6,406 +6,346 @@
   <title>Matrix — Model Amplification Engine</title>
   <style>
     :root {
-      --bg: #0d1117;
-      --bg2: #161b22;
-      --bg3: #21262d;
-      --border: #30363d;
+      --bg: #0a0e14;
+      --bg2: #12171f;
+      --bg3: #1a1f2b;
+      --border: #252b36;
       --text: #c9d1d9;
-      --text2: #8b949e;
+      --text2: #6b7280;
       --green: #3fb950;
+      --greenBg: rgba(63,185,80,0.1);
       --blue: #58a6ff;
+      --blueBg: rgba(88,166,255,0.1);
       --red: #f85149;
+      --redBg: rgba(248,81,73,0.1);
       --yellow: #d2991d;
+      --yellowBg: rgba(210,153,29,0.1);
       --purple: #bc8cff;
+      --purpleBg: rgba(188,140,255,0.1);
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
+      font-size: 14px;
+      line-height: 1.5;
     }
     header {
       background: var(--bg2);
       border-bottom: 1px solid var(--border);
-      padding: 16px 24px;
+      padding: 0 24px;
+      height: 56px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
-    header h1 { font-size: 20px; font-weight: 600; }
-    header .badge {
-      background: var(--green);
-      color: #000;
-      padding: 4px 12px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-    main { max-width: 1200px; margin: 0 auto; padding: 24px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
-    .card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 20px;
-    }
-    .card h3 { font-size: 13px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-    .card .value { font-size: 28px; font-weight: 700; }
-    .card .value.green { color: var(--green); }
-    .card .value.blue { color: var(--blue); }
-    .card .value.purple { color: var(--purple); }
-    .card .value.yellow { color: var(--yellow); }
-    .card .sub { font-size: 12px; color: var(--text2); margin-top: 4px; }
-    .section { margin-bottom: 24px; }
-    .section h2 { font-size: 16px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
-    th { color: var(--text2); font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
-    td .mono { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; }
+    header .brand { display: flex; align-items: center; gap: 10px; }
+    header .brand .icon { font-size: 22px; }
+    header .brand h1 { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+    header .brand .ver { font-size: 11px; color: var(--text2); background: var(--bg3); padding: 2px 8px; border-radius: 10px; }
+    header .status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--green); }
+    header .status::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
     .btn {
-      padding: 8px 16px;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      background: var(--bg3);
-      color: var(--text);
-      cursor: pointer;
-      font-size: 13px;
-      transition: all 0.15s;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--bg3); color: var(--text); cursor: pointer;
+      font-size: 12px; font-weight: 500; transition: all 0.15s;
+      text-decoration: none;
     }
     .btn:hover { background: var(--border); }
     .btn.primary { background: var(--green); color: #000; border-color: var(--green); }
-    .btn.danger { background: transparent; color: var(--red); border-color: var(--red); }
+    .btn.primary:hover { opacity: 0.85; }
+    .btn.danger { color: var(--red); border-color: var(--red); }
     .btn.danger:hover { background: var(--red); color: #fff; }
-    .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 4px; font-weight: 600; }
+    .btn.sm { padding: 4px 10px; font-size: 11px; }
+    main { max-width: 1100px; margin: 0 auto; padding: 28px 24px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 32px; }
+    .card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 20px;
+    }
+    .card .label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; margin-bottom: 6px; }
+    .card .value { font-size: 30px; font-weight: 700; letter-spacing: -0.5px; }
+    .card .sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+    .green { color: var(--green); }
+    .blue { color: var(--blue); }
+    .purple { color: var(--purple); }
+    .yellow { color: var(--yellow); }
+    .section { margin-bottom: 32px; }
+    .section h2 { font-size: 15px; font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .section h2 .icon { font-size: 16px; }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text2); font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; background: var(--bg3); }
+    td { padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 13px; }
+    tr:hover td { background: rgba(255,255,255,0.01); }
+    .mono { font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace; font-size: 12px; }
+    .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 500; }
+    .badge.active { background: var(--greenBg); color: var(--green); }
+    .badge.revoked { background: var(--redBg); color: var(--red); }
+    .badge .dot { width: 6px; height: 6px; border-radius: 50%; }
+    .badge.active .dot { background: var(--green); }
+    .badge.revoked .dot { background: var(--red); }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 11px; color: var(--text2); margin-bottom: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
     .form-group input, .form-group select {
-      width: 100%;
-      padding: 8px 12px;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      color: var(--text);
-      font-size: 13px;
+      width: 100%; padding: 9px 12px; border-radius: 6px;
+      border: 1px solid var(--border); background: var(--bg); color: var(--text);
+      font-size: 13px; outline: none; transition: border-color 0.15s;
     }
-    .form-inline { display: flex; gap: 8px; align-items: flex-end; }
-    .form-inline .form-group { flex: 1; margin-bottom: 0; }
-    .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
-    .status-dot.active { background: var(--green); }
-    .status-dot.revoked { background: var(--red); }
+    .form-group input:focus, .form-group select:focus { border-color: var(--green); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    .inline-form { display: flex; gap: 10px; align-items: flex-end; margin-bottom: 16px; }
+    .inline-form .form-group { flex: 1; margin-bottom: 0; }
+    .key-display {
+      background: var(--bg); border: 1px solid var(--yellow); border-radius: 8px;
+      padding: 16px; margin-top: 12px; display: none;
+    }
+    .key-display .warn { color: var(--yellow); font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+    .key-display code {
+      display: block; font-size: 13px; word-break: break-all; color: var(--yellow);
+      font-family: 'SF Mono', monospace; background: var(--bg2); padding: 10px;
+      border-radius: 6px; margin: 8px 0;
+    }
+    .empty { text-align: center; padding: 36px; color: var(--text2); font-size: 13px; }
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 1000; display: flex; flex-direction: column; gap: 8px; }
     .toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      padding: 12px 20px;
-      border-radius: 8px;
-      color: #fff;
-      font-size: 13px;
-      z-index: 1000;
-      animation: slideIn 0.3s ease;
+      padding: 10px 18px; border-radius: 8px; font-size: 12px; font-weight: 500;
+      animation: slideIn 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
-    .toast.success { background: var(--green); color: #000; }
-    .toast.error { background: var(--red); }
-    @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    #keyDisplay {
-      background: var(--bg);
-      border: 1px solid var(--yellow);
-      border-radius: 8px;
-      padding: 16px;
-      margin-top: 12px;
-      display: none;
+    .toast.ok { background: var(--green); color: #000; }
+    .toast.err { background: var(--red); color: #fff; }
+    @keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+    .tab {
+      padding: 8px 18px; cursor: pointer; font-size: 13px; color: var(--text2);
+      border-bottom: 2px solid transparent; transition: all 0.15s; font-weight: 500;
     }
-    #keyDisplay code {
-      font-size: 14px;
-      word-break: break-all;
-      color: var(--yellow);
-      font-family: 'SF Mono', 'Fira Code', monospace;
-    }
-    .warning { color: var(--yellow); font-size: 12px; margin-top: 8px; }
-    .empty-state { text-align: center; padding: 40px; color: var(--text2); }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--green); border-bottom-color: var(--green); }
   </style>
 </head>
 <body>
   <header>
-    <h1>⚡ Matrix — Model Amplification Engine</h1>
-    <span class="badge" id="statusBadge">● ONLINE</span>
+    <div class="brand">
+      <span class="icon">⚡</span>
+      <h1>Matrix</h1>
+      <span class="ver">v3.0</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span class="status" id="sysStatus">Online</span>
+      <a href="/" class="btn sm" style="color:var(--red);">Logout</a>
+    </div>
   </header>
 
   <main>
-    <!-- Metrics Cards -->
-    <div class="grid" id="metricsGrid">
+    <!-- Metric Cards -->
+    <div class="grid">
       <div class="card">
-        <h3>Amplification Score</h3>
-        <div class="value green">—</div>
+        <div class="label">Amplification Score</div>
+        <div class="value green" id="ampScore">—</div>
         <div class="sub">Quality gain vs direct model</div>
       </div>
       <div class="card">
-        <h3>Gap Reduction</h3>
-        <div class="value purple">—</div>
+        <div class="label">Gap Reduction</div>
+        <div class="value purple" id="gapRed">—</div>
         <div class="sub">% of frontier gap closed</div>
       </div>
       <div class="card">
-        <h3>Total Requests</h3>
-        <div class="value blue">0</div>
-        <div class="sub">API calls this month</div>
+        <div class="label">Total Requests</div>
+        <div class="value blue" id="totalReq">0</div>
+        <div class="sub">API calls this session</div>
       </div>
       <div class="card">
-        <h3>Avg Latency</h3>
-        <div class="value yellow">—</div>
+        <div class="label">Avg Latency</div>
+        <div class="value yellow" id="avgLat">—</div>
         <div class="sub">Milliseconds</div>
       </div>
     </div>
 
-    <!-- API Keys Section -->
-    <div class="section">
-      <h2>🔑 API Keys</h2>
-      <div class="form-inline" style="margin-bottom: 16px;">
-        <div class="form-group">
-          <label>Key Name</label>
-          <input type="text" id="newKeyName" placeholder="e.g., CLI client, VSCode plugin">
-        </div>
-        <div class="form-group" style="max-width: 120px;">
-          <label>Expires (days)</label>
-          <input type="number" id="newKeyExpiry" placeholder="Never" min="1">
-        </div>
-        <button class="btn primary" onclick="generateKey()" style="margin-bottom: 1px;">+ Generate Key</button>
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('keys')">API Keys</div>
+      <div class="tab" onclick="switchTab('config')">Provider Config</div>
+      <div class="tab" onclick="switchTab('system')">System</div>
+    </div>
+
+    <!-- Keys Tab -->
+    <div id="tab-keys" class="section">
+      <div class="inline-form">
+        <div class="form-group"><label>Key Name</label><input type="text" id="newKeyName" placeholder="e.g. My CLI"></div>
+        <div class="form-group" style="max-width:100px;"><label>Expires (d)</label><input type="number" id="newKeyExpiry" placeholder="∞" min="1"></div>
+        <button class="btn primary" onclick="generateKey()" style="margin-bottom:1px;">+ Generate</button>
       </div>
-      <div id="keyDisplay">
-        <strong style="color: var(--yellow);">⚠ Save this key now — it won't be shown again:</strong><br><br>
+      <div class="key-display" id="keyDisplay">
+        <div class="warn">⚠ Save this key — it won't be shown again</div>
         <code id="keyDisplayRaw"></code>
-        <button class="btn" style="margin-top: 8px;" onclick="copyKey()">📋 Copy</button>
+        <button class="btn sm" onclick="copyKey()" style="margin-top:6px;">Copy</button>
       </div>
       <table>
-        <thead>
-          <tr><th>Name</th><th>Prefix</th><th>Created</th><th>Last Used</th><th>Status</th><th>Actions</th></tr>
-        </thead>
-        <tbody id="keysTableBody">
-          <tr><td colspan="6" class="empty-state">No API keys yet. Generate your first key above.</td></tr>
-        </tbody>
+        <thead><tr><th>Name</th><th>Prefix</th><th>Created</th><th>Last Used</th><th>Status</th><th></th></tr></thead>
+        <tbody id="keysTableBody"><tr><td colspan="6" class="empty">No API keys yet</td></tr></tbody>
       </table>
     </div>
 
-    <!-- Provider Configuration -->
-    <div class="section">
-      <h2>⚙ Provider Configuration</h2>
+    <!-- Config Tab -->
+    <div id="tab-config" class="section" style="display:none;">
       <div class="card">
-        <form id="configForm" onsubmit="saveConfig(event)">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-            <div class="form-group">
-              <label>Provider</label>
-              <select id="cfgProvider">
-                <option value="deepseek">DeepSeek</option>
-                <option value="openai">OpenAI</option>
-                <option value="anthropic">Anthropic</option>
-                <option value="openrouter">OpenRouter</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Model</label>
-              <input type="text" id="cfgModel" placeholder="e.g., deepseek-chat">
-            </div>
-            <div class="form-group">
-              <label>Provider API Key</label>
-              <input type="password" id="cfgApiKey" placeholder="sk-... or leave empty to keep current">
-            </div>
-            <div class="form-group">
-              <label>Max Tokens</label>
-              <input type="number" id="cfgMaxTokens" value="4096">
-            </div>
-            <div class="form-group">
-              <label>Temperature</label>
-              <input type="number" id="cfgTemperature" value="0.7" step="0.1" min="0" max="2">
-            </div>
+        <form onsubmit="saveConfig(event)">
+          <div class="form-row">
+            <div class="form-group"><label>Provider</label>
+              <select id="cfgProvider"><option value="deepseek">DeepSeek</option><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="openrouter">OpenRouter</option></select></div>
+            <div class="form-group"><label>Model</label><input type="text" id="cfgModel" placeholder="deepseek-chat"></div>
           </div>
-          <button type="submit" class="btn primary" style="margin-top: 12px;">Save Configuration</button>
+          <div class="form-group"><label>Provider API Key</label><input type="password" id="cfgApiKey" placeholder="sk-... (leave empty to keep current)"></div>
+          <div class="form-row">
+            <div class="form-group"><label>Max Tokens</label><input type="number" id="cfgMaxTokens" value="4096"></div>
+            <div class="form-group"><label>Temperature</label><input type="number" id="cfgTemperature" value="0.7" step="0.1" min="0" max="2"></div>
+          </div>
+          <button type="submit" class="btn primary" style="margin-top:10px;">Save Configuration</button>
         </form>
       </div>
     </div>
 
-    <!-- System Status -->
-    <div class="section">
-      <h2>📊 System Status</h2>
+    <!-- System Tab -->
+    <div id="tab-system" class="section" style="display:none;">
       <div class="card">
         <table>
-          <tr><td>Version</td><td id="sysVersion">—</td></tr>
-          <tr><td>Uptime</td><td id="sysUptime">—</td></tr>
-          <tr><td>Node.js</td><td id="sysNode">—</td></tr>
-          <tr><td>Platform</td><td id="sysPlatform">—</td></tr>
-          <tr><td>Memory</td><td id="sysMemory">—</td></tr>
+          <tr><td style="color:var(--text2);width:140px;">Version</td><td id="sysVersion">—</td></tr>
+          <tr><td style="color:var(--text2);">Uptime</td><td id="sysUptime">—</td></tr>
+          <tr><td style="color:var(--text2);">Node.js</td><td id="sysNode">—</td></tr>
+          <tr><td style="color:var(--text2);">Platform</td><td id="sysPlatform">—</td></tr>
+          <tr><td style="color:var(--text2);">Memory</td><td id="sysMemory">—</td></tr>
         </table>
       </div>
     </div>
   </main>
 
-  <div id="toastContainer"></div>
+  <div class="toast-container" id="toasts"></div>
 
   <script>
-    const API_BASE = '';
+    const TOKEN = localStorage.getItem('matrix_token') || new URLSearchParams(location.search).get('key') || '';
+    if (!TOKEN) { location.href = '/'; }
 
-    // Auth token — set from localStorage or prompt
-    let authToken = localStorage.getItem('matrix_token') || '';
-
-    async function api(method, path, body) {
-      const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken}`
-      };
-      const opts = { method, headers };
-      if (body) opts.body = JSON.stringify(body);
-      const res = await fetch(API_BASE + path, opts);
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({ error: { message: res.statusText } }));
-        throw new Error(err.error?.message || res.statusText);
-      }
-      return res.json();
+    async function api(m, url, body) {
+      const r = await fetch(url, {
+        method: m, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TOKEN}` },
+        body: body ? JSON.stringify(body) : undefined
+      });
+      if (!r.ok) throw new Error(((await r.json().catch(()=>({}))).error||{}).message||r.statusText);
+      return r.json();
     }
 
-    function toast(msg, type = 'success') {
-      const el = document.createElement('div');
-      el.className = `toast ${type}`;
-      el.textContent = msg;
-      document.getElementById('toastContainer').appendChild(el);
-      setTimeout(() => el.remove(), 4000);
+    function toast(msg, t) {
+      const e = document.createElement('div');
+      e.className = `toast ${t||'ok'}`; e.textContent = msg;
+      document.getElementById('toasts').appendChild(e);
+      setTimeout(() => e.remove(), 3500);
     }
 
-    // ── Keys ─────────────────────────────────────────
+    // ── Keys ──
     async function loadKeys() {
       try {
-        const data = await api('GET', '/api/keys');
-        const tbody = document.getElementById('keysTableBody');
-        if (!data.keys || data.keys.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No API keys yet. Generate your first key above.</td></tr>';
-          return;
-        }
-        tbody.innerHTML = data.keys.map(k => `
-          <tr>
-            <td>${k.name || '—'}</td>
-            <td><span class="mono">${k.key_prefix}...</span></td>
-            <td>${new Date(k.created_at).toLocaleDateString()}</td>
-            <td>${k.last_used_at ? new Date(k.last_used_at).toLocaleString() : 'Never'}</td>
-            <td><span class="status-dot ${k.revoked ? 'revoked' : 'active'}"></span>${k.revoked ? 'Revoked' : 'Active'}</td>
-            <td>${!k.revoked ? `<button class="btn danger" onclick="revokeKey('${k.id}')">Revoke</button>` : '—'}</td>
-          </tr>
-        `).join('');
-      } catch (e) {
-        toast(e.message, 'error');
-      }
+        const d = await api('GET', '/api/keys');
+        const tb = document.getElementById('keysTableBody');
+        if (!d.keys?.length) { tb.innerHTML = '<tr><td colspan="6" class="empty">No API keys yet</td></tr>'; return; }
+        tb.innerHTML = d.keys.map(k => `<tr>
+          <td>${k.name||'—'}</td>
+          <td><span class="mono">${k.key_prefix}…</span></td>
+          <td>${new Date(k.created_at).toLocaleDateString()}</td>
+          <td style="color:var(--text2);">${k.last_used_at ? new Date(k.last_used_at).toLocaleString() : 'Never'}</td>
+          <td><span class="badge ${k.revoked?'revoked':'active'}"><span class="dot"></span>${k.revoked?'Revoked':'Active'}</span></td>
+          <td>${!k.revoked ? `<button class="btn danger sm" onclick="revokeKey('${k.id}')">Revoke</button>` : '—'}</td>
+        </tr>`).join('');
+      } catch(e) { toast(e.message, 'err'); }
     }
 
     async function generateKey() {
       try {
-        const name = document.getElementById('newKeyName').value || 'Dashboard key';
-        const expiresInDays = parseInt(document.getElementById('newKeyExpiry').value) || null;
-        const data = await api('POST', '/api/keys', { name, expiresInDays });
-        const display = document.getElementById('keyDisplay');
-        document.getElementById('keyDisplayRaw').textContent = data.key.rawKey;
-        display.style.display = 'block';
-        toast('Key generated! Copy it now.', 'success');
+        const d = await api('POST', '/api/keys', {
+          name: document.getElementById('newKeyName').value||'Dashboard',
+          expiresInDays: parseInt(document.getElementById('newKeyExpiry').value)||null
+        });
+        document.getElementById('keyDisplayRaw').textContent = d.key.rawKey;
+        document.getElementById('keyDisplay').style.display = 'block';
+        toast('Key generated — copy it now!');
         loadKeys();
-      } catch (e) {
-        toast(e.message, 'error');
-      }
+      } catch(e) { toast(e.message, 'err'); }
     }
 
     async function revokeKey(id) {
-      if (!confirm('Revoke this key? Any client using it will lose access.')) return;
-      try {
-        await api('DELETE', `/api/keys/${id}`);
-        toast('Key revoked', 'success');
-        loadKeys();
-      } catch (e) {
-        toast(e.message, 'error');
-      }
+      if (!confirm('Revoke this key?')) return;
+      try { await api('DELETE', `/api/keys/${id}`); toast('Key revoked'); loadKeys(); }
+      catch(e) { toast(e.message, 'err'); }
     }
 
     function copyKey() {
-      const code = document.getElementById('keyDisplayRaw').textContent;
-      navigator.clipboard.writeText(code).then(() => toast('Copied!'));
+      navigator.clipboard.writeText(document.getElementById('keyDisplayRaw').textContent)
+        .then(() => toast('Copied to clipboard'));
     }
 
-    // ── Config ────────────────────────────────────────
+    // ── Config ──
     async function loadConfig() {
       try {
-        const data = await api('GET', '/api/config');
-        document.getElementById('cfgProvider').value = data.provider;
-        document.getElementById('cfgModel').value = data.model;
-        document.getElementById('cfgMaxTokens').value = data.maxTokens;
-        document.getElementById('cfgTemperature').value = data.temperature;
-      } catch (e) {
-        // Config may not exist yet — that's fine
-      }
+        const d = await api('GET', '/api/config');
+        document.getElementById('cfgProvider').value = d.provider;
+        document.getElementById('cfgModel').value = d.model;
+        document.getElementById('cfgMaxTokens').value = d.maxTokens;
+        document.getElementById('cfgTemperature').value = d.temperature;
+      } catch(e) {}
     }
 
     async function saveConfig(e) {
       e.preventDefault();
       try {
-        const body = {
+        const b = {
           provider: document.getElementById('cfgProvider').value,
           model: document.getElementById('cfgModel').value,
           maxTokens: parseInt(document.getElementById('cfgMaxTokens').value),
           temperature: parseFloat(document.getElementById('cfgTemperature').value)
         };
-        const apiKey = document.getElementById('cfgApiKey').value;
-        if (apiKey) body.apiKey = apiKey;
-
-        await api('PUT', '/api/config', body);
-        toast('Configuration saved', 'success');
+        const k = document.getElementById('cfgApiKey').value;
+        if (k) b.apiKey = k;
+        await api('PUT', '/api/config', b);
+        toast('Configuration saved');
         document.getElementById('cfgApiKey').value = '';
-      } catch (e) {
-        toast(e.message, 'error');
-      }
+      } catch(e) { toast(e.message, 'err'); }
     }
 
-    // ── Status ────────────────────────────────────────
-    async function loadStatus() {
+    // ── System ──
+    async function loadSystem() {
       try {
-        const data = await api('GET', '/api/status');
-        document.getElementById('sysVersion').textContent = data.version;
-        document.getElementById('sysUptime').textContent = formatUptime(data.uptime);
-        document.getElementById('sysNode').textContent = data.nodeVersion;
-        document.getElementById('sysPlatform').textContent = data.platform;
-        document.getElementById('sysMemory').textContent = formatBytes(data.memory?.rss || 0);
-        document.getElementById('statusBadge').textContent = '● ONLINE';
-      } catch (e) {
-        document.getElementById('statusBadge').textContent = '● OFFLINE';
-      }
+        const d = await api('GET', '/api/status');
+        document.getElementById('sysVersion').textContent = d.version;
+        document.getElementById('sysUptime').textContent = fmtUptime(d.uptime);
+        document.getElementById('sysNode').textContent = d.nodeVersion;
+        document.getElementById('sysPlatform').textContent = d.platform;
+        document.getElementById('sysMemory').textContent = (d.memory?.rss/1024/1024).toFixed(1)+' MB';
+        document.getElementById('sysStatus').textContent = 'Online';
+      } catch(e) { document.getElementById('sysStatus').textContent = 'Offline'; }
     }
 
-    // ── Usage ─────────────────────────────────────────
-    async function loadUsage() {
-      try {
-        const data = await api('GET', '/api/usage');
-        // Update cards
-        const cards = document.querySelectorAll('#metricsGrid .card .value');
-        cards[2].textContent = data.totalRequests || 0;
-      } catch (e) { /* usage may not be available */ }
+    // ── Tabs ──
+    function switchTab(t) {
+      document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+      document.querySelectorAll('.section[id^="tab-"]').forEach(x => x.style.display = 'none');
+      document.querySelector(`.tab:nth-child(${t==='keys'?1:t==='config'?2:3})`).classList.add('active');
+      document.getElementById(`tab-${t}`).style.display = 'block';
     }
 
-    // ── Helpers ───────────────────────────────────────
-    function formatUptime(seconds) {
-      const h = Math.floor(seconds / 3600);
-      const m = Math.floor((seconds % 3600) / 60);
-      const s = Math.floor(seconds % 60);
-      return `${h}h ${m}m ${s}s`;
+    function fmtUptime(s) {
+      const h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sec=Math.floor(s%60);
+      return `${h}h ${m}m ${sec}s`;
     }
 
-    function formatBytes(bytes) {
-      return (bytes / 1024 / 1024).toFixed(1) + ' MB';
-    }
-
-    // ── Init ──────────────────────────────────────────
-    if (!authToken) {
-      authToken = prompt('Enter your Matrix API key (mx_...):') || '';
-      if (authToken) {
-        localStorage.setItem('matrix_token', authToken);
-      }
-    }
-
-    loadKeys();
-    loadConfig();
-    loadStatus();
-    loadUsage();
-    setInterval(loadStatus, 30000);
+    // Init
+    loadKeys(); loadConfig(); loadSystem();
+    setInterval(loadSystem, 30000);
   </script>
 </body>
 </html>

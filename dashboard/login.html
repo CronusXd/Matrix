@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matrix — Login</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container { text-align: center; max-width: 420px; padding: 40px; }
+    .logo { font-size: 48px; margin-bottom: 8px; }
+    h1 { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+    .subtitle { color: #8b949e; font-size: 14px; margin-bottom: 32px; }
+    .card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: left;
+    }
+    label { font-size: 12px; color: #8b949e; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
+    input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid #30363d;
+      background: #0d1117;
+      color: #c9d1d9;
+      font-size: 13px;
+      font-family: 'SF Mono', Consolas, monospace;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: #3fb950; }
+    .btn {
+      width: 100%;
+      padding: 10px 0;
+      border-radius: 8px;
+      border: none;
+      background: #3fb950;
+      color: #000;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .hint {
+      font-size: 11px;
+      color: #8b949e;
+      margin-top: 12px;
+      text-align: center;
+    }
+    .hint code {
+      background: #21262d;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+    .error {
+      color: #f85149;
+      font-size: 12px;
+      margin-top: 8px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">⚡</div>
+    <h1>Matrix</h1>
+    <p class="subtitle">Model Amplification Engine</p>
+    <div class="card">
+      <label>Matrix API Key</label>
+      <input type="password" id="keyInput" placeholder="mx_..." autofocus autocomplete="off">
+      <div class="error" id="errorMsg"></div>
+      <button class="btn" onclick="login()">Access Dashboard</button>
+      <div class="hint">
+        Run <code>npm run seed</code> to generate a key
+      </div>
+    </div>
+  </div>
+  <script>
+    const KEY = localStorage.getItem('matrix_token');
+    if (KEY) { document.getElementById('keyInput').value = KEY; }
+    document.getElementById('keyInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') login();
+    });
+    async function login() {
+      const key = document.getElementById('keyInput').value.trim();
+      if (!key) { showError('Enter your API key'); return; }
+      try {
+        const res = await fetch('/api/status', {
+          headers: { 'Authorization': `Bearer ${key}` }
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          showError(err.error?.message || 'Invalid API key');
+          return;
+        }
+        localStorage.setItem('matrix_token', key);
+        window.location.href = '/dashboard';
+      } catch (e) {
+        showError('Connection failed — is the server running?');
+      }
+    }
+    function showError(msg) {
+      const el = document.getElementById('errorMsg');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
